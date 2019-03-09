@@ -3,4 +3,4 @@ ifeq ($(PROG),)
 $(error empty command (variable undefined))
 endif
 all:
-	$(PROG) $(ARGS)
+	@$(PROG) $(ARGS)

@@ -24,26 +24,3 @@ r_compile <- function(src, obj = NULL){
     stop("Failed to compile object(s): ", paste(obj, collapse = ","), call. = FALSE)
   return(obj)
 }
-
-call_with_make <- function(cmd = '$(CC)', args = '--version'){
-  makefile <- safe_path(system.file('run.make', package = 'makeconf'))
-  args <- paste(args, collapse = " ")
-  vars <- c(
-    paste0('R_MAKECONF=', makeconf_path()),
-    paste0('PROG=', cmd),
-    paste0('ARGS=', args))
-  sys::exec_internal('make', c('-f', makefile, vars), error = FALSE)
-}
-
-makeconf_path <- function(){
-  conf_name <- paste0(Sys.getenv('R_ARCH'), '/makeconf')
-  safe_path(file.path(R.home('etc'), conf_name))
-}
-
-safe_path <- function(x){
-  x <- normalizePath(x, mustWork = TRUE)
-  if(.Platform$OS.type == "windows"){
-    x <- utils::shortPathName(x)
-  }
-  return(x)
-}
