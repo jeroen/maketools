@@ -2,19 +2,28 @@
 % Please edit documentation in R/r-makeconf.R
 \name{r_cmd_config}
 \alias{r_cmd_config}
-\alias{r_make_test}
+\alias{r_make_call}
+\alias{r_makeconf_path}
 \title{Check your makeconf}
 \usage{
 r_cmd_config(VAR = "--all")
 
-r_make_test(VAR, args = "--version")
+r_make_call(cmd = "$(CC)", args = "--version")
+
+r_makeconf_path()
 }
 \arguments{
 \item{VAR}{value passed to `R CMD config` such as `CXX` or `FC`}
 
-\item{args}{argument(s) to test program}
+\item{cmd}{command to invoke (may be a variable)}
+
+\item{args}{additional arguments for `cmd`}
 }
 \description{
 Wrappers for `make` and `R CMD config` to lookup and test make variables
 from your local `Makeconf` file.
+}
+\examples{
+# Where your makeconf is stored:
+r_makeconf_path()
 }

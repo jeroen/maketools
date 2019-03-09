@@ -32,3 +32,18 @@ r_test_cxx11 <- function(){
 r_test_fc <- function(){
   r_make_test('FC')
 }
+
+r_make_test <-function(VAR, args = '--version'){
+  PATH <- r_cmd_config(VAR)
+  info <- r_make_call(PATH, args)
+  version <- if(length(info$stdout)){
+    con <- rawConnection(info$stdout)
+    on.exit(close(con))
+    readLines(con)
+  }
+  list(
+    path = PATH,
+    available = info$status == 0,
+    version = version
+  )
+}

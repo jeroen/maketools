@@ -22,34 +22,23 @@ r_cmd_config <- function(VAR = '--all'){
 
 #' @export
 #' @rdname r_cmd_config
-#' @param args argument(s) to test program
-r_make_test <-function(VAR, args = '--version'){
-  PATH <- r_cmd_config(VAR)
-  info <- make_call(PATH, args)
-  version <- if(length(info$stdout)){
-    con <- rawConnection(info$stdout)
-    on.exit(close(con))
-    readLines(con)
-  }
-
-  list(
-    path = PATH,
-    available = info$status == 0,
-    version = version
-  )
-}
-
-make_call <- function(cmd = '$(CC)', args = '--version'){
+#' @param cmd command to invoke (may be a variable)
+#' @param args additional arguments for `cmd`
+r_make_call <- function(cmd = '$(CC)', args = '--version'){
   makefile <- safe_path(system.file('run.make', package = 'makeconf'))
   args <- paste(args, collapse = " ")
   vars <- c(
-    paste0('R_MAKECONF=', makeconf_path()),
+    paste0('R_MAKECONF=', r_makeconf_path()),
     paste0('PROG=', cmd),
     paste0('ARGS=', args))
   sys::exec_internal('make', c('-f', makefile, vars), error = FALSE)
 }
 
-makeconf_path <- function(){
+#' @export
+#' @rdname r_cmd_config
+#' @examples # Where your makeconf is stored:
+#' r_makeconf_path()
+r_makeconf_path <- function(){
   conf_name <- paste0(Sys.getenv('R_ARCH'), '/makeconf')
   safe_path(file.path(R.home('etc'), conf_name))
 }

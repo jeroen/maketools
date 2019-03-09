@@ -2,7 +2,8 @@
 
 export(r_cmd_config)
 export(r_compile)
-export(r_make_test)
+export(r_make_call)
+export(r_makeconf_path)
 export(r_test_cc)
 export(r_test_cxx)
 export(r_test_cxx11)
