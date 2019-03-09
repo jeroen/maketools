@@ -11,56 +11,52 @@
 #'
 #' # Show default C++ compiler:
 #' r_test_cxx()
-r_test_make <- function(){
-  make <- Sys.getenv('MAKE', 'make')
-}
-
 r_test_cc <- function(){
-  r_make_test('CC')
+  r_make_test('CC', 'CFLAGS')
 }
 
 #' @export
 #' @rdname r_config
 r_test_cxx <- function(){
-  r_make_test('CXX')
+  r_make_test('CXX', 'CXXFLAGS')
 }
 
 #' @export
 #' @rdname r_config
 r_test_cxx11 <- function(){
-  r_make_test('CXX11')
+  r_make_test('CXX11', 'CXX11FLAGS', 'CXX11STD')
 }
 
 #' @export
 #' @rdname r_config
 r_test_cxx14 <- function(){
-  r_make_test('CXX14')
+  r_make_test('CXX14', 'CXX14FLAGS', 'CXX14STD')
 }
 
 #' @export
 #' @rdname r_config
 r_test_cxx17 <- function(){
-  r_make_test('CXX17')
+  r_make_test('CXX17', 'CXX17FLAGS', 'CXX17STD')
 }
 
 #' @export
 #' @rdname r_config
 r_test_fc <- function(){
-  r_make_test('FC')
+  r_make_test('FC', 'FCFLAGS')
 }
 
-r_make_test <-function(VAR, args = '--version'){
+r_make_test <-function(VAR, FLAGS = NULL, STD = NULL, args = '--version'){
   PATH <- r_cmd_config(VAR)
-  FLAGS <- r_cmd_config(paste0(VAR, 'FLAGS'))
-  STD <- if(grepl("^CXX", VAR)){
-    tryCatch(r_cmd_config(paste0(VAR, 'STD')), error = function(e){""})
-  }
+  if(length(FLAGS))
+    FLAGS <- r_cmd_config(FLAGS)
+  if(length(STD))
+    STD <- r_cmd_config(STD)
   info <- r_make_call(PATH, args)
   version <- as_text(info$stdout)
   list(
     path = PATH,
-    std = STD,
     flags = FLAGS,
+    std = STD,
     available = info$status == 0,
     version = version[1]
   )
