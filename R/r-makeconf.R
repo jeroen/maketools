@@ -39,8 +39,8 @@ r_make_call <- function(cmd = '$(CC)', args = '--version'){
 #' @examples # Where your makeconf is stored:
 #' r_makeconf_path()
 r_makeconf_path <- function(){
-  conf_name <- paste0(Sys.getenv('R_ARCH'), '/makeconf')
-  safe_path(file.path(R.home('etc'), conf_name))
+  conf_path <- paste0(R.home('etc'), Sys.getenv('R_ARCH'), '/Makeconf')
+  safe_path(conf_path)
 }
 
 safe_path <- function(x){
