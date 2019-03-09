@@ -21,9 +21,9 @@ Cross-platform wrappers for `R CMD config` to lookup the availability
 of the compiler.
 }
 \examples{
-# This runs 'R CMD CONFIG CXX11'
-r_cmd_config("CXX11")
+# This runs 'R CMD CONFIG CXX'
+r_cmd_config("CXX")
 
-# Show your C++11 compiler:
-r_test_cxx11()
+# Show default C++ compiler:
+r_test_cxx()
 }

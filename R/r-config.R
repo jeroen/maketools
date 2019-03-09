@@ -6,11 +6,11 @@
 #' @export
 #' @name r_config
 #' @rdname r_config
-#' @examples # This runs 'R CMD CONFIG CXX11'
-#' r_cmd_config("CXX11")
+#' @examples # This runs 'R CMD CONFIG CXX'
+#' r_cmd_config("CXX")
 #'
-#' # Show your C++11 compiler:
-#' r_test_cxx11()
+#' # Show default C++ compiler:
+#' r_test_cxx()
 r_test_cc <- function(){
   r_make_test('CC')
 }
