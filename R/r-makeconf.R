@@ -40,9 +40,18 @@ r_make_call <- function(cmd = '$(CC)', args = '--version'){
 #' @examples # Where your makeconf is stored:
 #' r_make_info()
 r_make_info <- function(){
+  name <- r_make_path()
+  path <- unname(Sys.which(r_make_path()))
+  version <- if(nchar(path)){
+    info <- r_exec_make('--version')
+    if(info$status == 0){
+      as_text(info$stdout)[1]
+    }
+  }
   list(
-    name = r_make_path(),
-    path = unname(Sys.which(r_make_path())),
+    name = name,
+    path = path,
+    version = version,
     makeconf = r_makeconf_path()
   )
 }
@@ -66,6 +75,14 @@ safe_path <- function(x){
     x <- utils::shortPathName(x)
   }
   return(x)
+}
+
+as_text <- function(x){
+  if(length(x)){
+    con <- rawConnection(x)
+    on.exit(close(con))
+    readLines(con)
+  }
 }
 
 is_solaris <- function(){

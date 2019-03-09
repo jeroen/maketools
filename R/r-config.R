@@ -52,11 +52,7 @@ r_test_fc <- function(){
 r_make_test <-function(VAR, args = '--version'){
   PATH <- r_cmd_config(VAR)
   info <- r_make_call(PATH, args)
-  version <- if(length(info$stdout)){
-    con <- rawConnection(info$stdout)
-    on.exit(close(con))
-    readLines(con)
-  }
+  version <- as_text(info$stdout)
   list(
     path = PATH,
     available = info$status == 0,
