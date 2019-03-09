@@ -29,6 +29,18 @@ r_test_cxx11 <- function(){
 
 #' @export
 #' @rdname r_config
+r_test_cxx14 <- function(){
+  r_make_test('CXX14')
+}
+
+#' @export
+#' @rdname r_config
+r_test_cxx17 <- function(){
+  r_make_test('CXX17')
+}
+
+#' @export
+#' @rdname r_config
 r_test_fc <- function(){
   r_make_test('FC')
 }

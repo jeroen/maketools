@@ -25,7 +25,8 @@ r_cmd_config <- function(VAR = '--all'){
 #' @param cmd command to invoke (may be a variable)
 #' @param args additional arguments for `cmd`
 r_make_call <- function(cmd = '$(CC)', args = '--version'){
-  makefile <- safe_path(system.file('run.make', package = 'makeconf'))
+  testmake <- ifelse(is_solaris(), 'solaris.make', 'test.make')
+  makefile <- safe_path(system.file(testmake, package = 'makeconf'))
   args <- paste(args, collapse = " ")
   vars <- c(
     paste0('R_MAKECONF=', r_makeconf_path()),
@@ -49,4 +50,8 @@ safe_path <- function(x){
     x <- utils::shortPathName(x)
   }
   return(x)
+}
+
+is_solaris <- function(){
+  Sys.info()[["sysname"]] == "SunOS"
 }

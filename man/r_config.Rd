@@ -5,6 +5,8 @@
 \alias{r_test_cc}
 \alias{r_test_cxx}
 \alias{r_test_cxx11}
+\alias{r_test_cxx14}
+\alias{r_test_cxx17}
 \alias{r_test_fc}
 \title{R CMD Config}
 \usage{
@@ -13,6 +15,10 @@ r_test_cc()
 r_test_cxx()
 
 r_test_cxx11()
+
+r_test_cxx14()
+
+r_test_cxx17()
 
 r_test_fc()
 }
