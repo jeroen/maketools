@@ -1,13 +1,14 @@
 Package: makeconf
 Type: Package
-Title: Cross-Platform Utilities to Lookup the R Compiler
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: Find and test the proper compiler to build packages with
-    C, C++, or Fortran code. Also allows for exploring implicit 'make'
-    rules for your system. For Windows and MacOS additional helpers 
-    are provided to setup the Rtools / Xcode installation.
+Title: Explore and Test the Local Toolchain Configuration
+Version: 0.1
+Authors@R: person("Jeroen", "Ooms", role = c("aut", "cre"), 
+    email = "jeroen@berkeley.edu", comment = c(ORCID = "0000-0002-4035-0289"))
+Description: The 'Makeconf' file is used by R to store system specific
+    compilers, flags, and settings to build packages with C, C++, or Fortran
+    code. This package allows you explore 'make' rules on your system and test
+    the local configuration. It is particularly helpful on Windows and MacOS
+    where compilers have to be installed manually via Rtools or Xcode.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
