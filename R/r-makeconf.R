@@ -32,7 +32,7 @@ r_make_call <- function(cmd = '$(CC)', args = '--version'){
     paste0('R_MAKECONF=', r_makeconf_path()),
     paste0('PROG=', cmd),
     paste0('ARGS=', args))
-  sys::exec_internal(r_make_path(), c('-f', makefile, vars), error = FALSE)
+  r_exec_make(c('-f', makefile, vars))
 }
 
 #' @export
@@ -45,6 +45,10 @@ r_make_info <- function(){
     path = unname(Sys.which(r_make_path())),
     makeconf = r_makeconf_path()
   )
+}
+
+r_exec_make <- function(args){
+  sys::exec_internal(r_make_path(), args, error = FALSE)
 }
 
 r_makeconf_path <- function(){
