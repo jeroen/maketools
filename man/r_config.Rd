@@ -2,7 +2,7 @@
 % Please edit documentation in R/r-config.R
 \name{r_config}
 \alias{r_config}
-\alias{r_test_cc}
+\alias{r_test_make}
 \alias{r_test_cxx}
 \alias{r_test_cxx11}
 \alias{r_test_cxx14}
@@ -10,7 +10,7 @@
 \alias{r_test_fc}
 \title{R CMD Config}
 \usage{
-r_test_cc()
+r_test_make()
 
 r_test_cxx()
 

@@ -3,14 +3,14 @@
 \name{r_cmd_config}
 \alias{r_cmd_config}
 \alias{r_make_call}
-\alias{r_makeconf_path}
+\alias{r_make_info}
 \title{Check your makeconf}
 \usage{
 r_cmd_config(VAR = "--all")
 
 r_make_call(cmd = "$(CC)", args = "--version")
 
-r_makeconf_path()
+r_make_info()
 }
 \arguments{
 \item{VAR}{value passed to `R CMD config` such as `CXX` or `FC`}
@@ -25,5 +25,5 @@ from your local `Makeconf` file.
 }
 \examples{
 # Where your makeconf is stored:
-r_makeconf_path()
+r_make_info()
 }

@@ -19,7 +19,7 @@
 r_compile <- function(src, obj = NULL){
   if(!length(obj))
     obj <- sub('\\.(c|cc|cpp|f|f90|f95)$', '.o', src)
-  status <- sys::exec_wait('make', c(obj, '-f', r_makeconf_path()))
+  status <- sys::exec_wait(r_make_path(), c(obj, '-f', r_makeconf_path()))
   if(!identical(status, 0L))
     stop("Failed to compile object(s): ", paste(obj, collapse = ","), call. = FALSE)
   return(obj)

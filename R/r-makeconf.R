@@ -32,16 +32,28 @@ r_make_call <- function(cmd = '$(CC)', args = '--version'){
     paste0('R_MAKECONF=', r_makeconf_path()),
     paste0('PROG=', cmd),
     paste0('ARGS=', args))
-  sys::exec_internal('make', c('-f', makefile, vars), error = FALSE)
+  sys::exec_internal(r_make_path(), c('-f', makefile, vars), error = FALSE)
 }
 
 #' @export
 #' @rdname r_cmd_config
 #' @examples # Where your makeconf is stored:
-#' r_makeconf_path()
+#' r_make_info()
+r_make_info <- function(){
+  list(
+    name = r_make_path(),
+    path = unname(Sys.which(r_make_path())),
+    makeconf = r_makeconf_path()
+  )
+}
+
 r_makeconf_path <- function(){
   conf_path <- paste0(R.home('etc'), Sys.getenv('R_ARCH'), '/Makeconf')
   safe_path(conf_path)
+}
+
+r_make_path <- function(){
+  Sys.getenv('MAKE', 'make')
 }
 
 safe_path <- function(x){

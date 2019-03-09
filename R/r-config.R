@@ -11,6 +11,10 @@
 #'
 #' # Show default C++ compiler:
 #' r_test_cxx()
+r_test_make <- function(){
+  make <- Sys.getenv('MAKE', 'make')
+}
+
 r_test_cc <- function(){
   r_make_test('CC')
 }
