@@ -23,7 +23,7 @@ r_cmd_config <- function(VAR = '--all'){
 #' @export
 #' @rdname r_cmd_config
 #' @param args argument(s) to test program
-make_test <-function(VAR, args = '--version'){
+r_make_test <-function(VAR, args = '--version'){
   PATH <- r_cmd_config(VAR)
   info <- make_call(PATH, args)
   version <- if(length(info$stdout)){

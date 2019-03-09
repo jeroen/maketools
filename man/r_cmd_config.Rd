@@ -2,12 +2,12 @@
 % Please edit documentation in R/r-makeconf.R
 \name{r_cmd_config}
 \alias{r_cmd_config}
-\alias{make_test}
+\alias{r_make_test}
 \title{Check your makeconf}
 \usage{
 r_cmd_config(VAR = "--all")
 
-make_test(VAR, args = "--version")
+r_make_test(VAR, args = "--version")
 }
 \arguments{
 \item{VAR}{value passed to `R CMD config` such as `CXX` or `FC`}

@@ -12,23 +12,23 @@
 #' # Show your C++11 compiler:
 #' r_test_cxx11()
 r_test_cc <- function(){
-  make_test('CC')
+  r_make_test('CC')
 }
 
 #' @export
 #' @rdname r_config
 r_test_cxx <- function(){
-  make_test('CXX')
+  r_make_test('CXX')
 }
 
 #' @export
 #' @rdname r_config
 r_test_cxx11 <- function(){
-  make_test('CXX11')
+  r_make_test('CXX11')
 }
 
 #' @export
 #' @rdname r_config
 r_test_fc <- function(){
-  make_test('FC')
+  r_make_test('FC')
 }
