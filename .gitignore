@@ -1,0 +1,12 @@
+.V8history
+.Rproj.user
+.Rhistory
+.RData
+homebrew
+src/*.o
+src/*.so
+src/*.dll
+src/Makevars
+.DS_Store
+src/gcc_version.txt
+windows

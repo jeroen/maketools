@@ -1,0 +1,15 @@
+Package: makeconf
+Type: Package
+Title: Cross-Platform Utilities to Lookup the R Compiler
+Version: 0.1.0
+Author: Who wrote it
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: Find and test the proper compiler to build packages with
+    C, C++, or Fortran code. Also allows for exploring implicit 'make'
+    rules for your system. For Windows and MacOS additional helpers 
+    are provided to setup the Rtools / Xcode installation.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports: sys
+RoxygenNote: 6.1.1
