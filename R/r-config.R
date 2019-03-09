@@ -62,6 +62,6 @@ r_make_test <-function(VAR, args = '--version'){
     std = STD,
     flags = FLAGS,
     available = info$status == 0,
-    version = version
+    version = version[1]
   )
 }
