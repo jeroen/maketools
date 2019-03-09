@@ -51,10 +51,16 @@ r_test_fc <- function(){
 
 r_make_test <-function(VAR, args = '--version'){
   PATH <- r_cmd_config(VAR)
+  FLAGS <- r_cmd_config(paste0(VAR, 'FLAGS'))
+  STD <- if(grepl("^CXX", VAR)){
+    tryCatch(r_cmd_config(paste0(VAR, 'STD')), error = function(e){""})
+  }
   info <- r_make_call(PATH, args)
   version <- as_text(info$stdout)
   list(
     path = PATH,
+    std = STD,
+    flags = FLAGS,
     available = info$status == 0,
     version = version
   )

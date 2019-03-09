@@ -10,13 +10,11 @@ r_cmd_config <- function(VAR = '--all'){
   R <- file.path(R.home('bin'), 'R')
   outcon <- rawConnection(raw(0), "r+")
   on.exit(close(outcon), add = TRUE)
-  status <- sys::exec_wait(R, c("CMD", "config", VAR), std_out = outcon)
-  output <- rawToChar(rawConnectionValue(outcon))
-  if(identical(status, 0L)){
-    strsplit(output, '\r?\n')[[1]]
+  out <- sys::exec_internal(R, c("CMD", "config", VAR), error = FALSE)
+  if(out$status == 0){
+    as_text(out$stdout)
   } else {
-    # R CMD config seems to print errors to stdout :/
-    stop(output, call. = FALSE)
+    stop(as_text(c(out$stdout, out$stderr)), call. = FALSE)
   }
 }
 
