@@ -5,12 +5,13 @@
 #'
 #' @export
 #' @rdname r_cmd_config
+#' @importFrom sys as_text exec_internal
 #' @param VAR value passed to `R CMD config` such as `CXX` or `FC`
 r_cmd_config <- function(VAR = '--all'){
   R <- file.path(R.home('bin'), 'R')
   outcon <- rawConnection(raw(0), "r+")
   on.exit(close(outcon), add = TRUE)
-  out <- sys::exec_internal(R, c("CMD", "config", VAR), error = FALSE)
+  out <- exec_internal(R, c("CMD", "config", VAR), error = FALSE)
   if(out$status == 0){
     as_text(out$stdout)
   } else {
@@ -55,7 +56,7 @@ r_make_info <- function(){
 }
 
 r_exec_make <- function(args){
-  sys::exec_internal(r_make_path(), args, error = FALSE)
+  exec_internal(r_make_path(), args, error = FALSE)
 }
 
 r_makeconf_path <- function(){
@@ -73,14 +74,6 @@ safe_path <- function(x){
     x <- utils::shortPathName(x)
   }
   return(x)
-}
-
-as_text <- function(x){
-  if(length(x)){
-    con <- rawConnection(x)
-    on.exit(close(con))
-    readLines(con)
-  }
 }
 
 is_solaris <- function(){

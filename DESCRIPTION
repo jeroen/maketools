@@ -12,6 +12,5 @@ Description: The 'Makeconf' file is used by R to store system specific
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: sys
+Imports: sys (>= 3.1)
 RoxygenNote: 6.1.1
-
