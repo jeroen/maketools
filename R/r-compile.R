@@ -18,6 +18,9 @@
 #' writeLines(testprog, con = 'testprog.cc')
 #' make('testprog')
 #' system('./testprog')
+#'
+#' # Cleanup
+#' unlink(c('testprog.cc', 'testprog'))
 make <- function(target = 'all', makefile = r_makeconf_path()){
   status <- sys::exec_wait(r_make_path(), c(target, '-f', makefile))
   if(!identical(status, 0L))

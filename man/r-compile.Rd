@@ -28,4 +28,7 @@ testprog <- '#include <iostream>\\nint main() {std::cout << "Hello World!";}'
 writeLines(testprog, con = 'testprog.cc')
 make('testprog')
 system('./testprog')
+
+# Cleanup
+unlink(c('testprog.cc', 'testprog'))
 }
