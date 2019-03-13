@@ -2,25 +2,25 @@
 % Please edit documentation in R/r-config.R
 \name{r_config}
 \alias{r_config}
-\alias{r_test_cc}
-\alias{r_test_cxx}
-\alias{r_test_cxx11}
-\alias{r_test_cxx14}
-\alias{r_test_cxx17}
-\alias{r_test_fc}
+\alias{cc_info}
+\alias{cxx_info}
+\alias{cxx11_info}
+\alias{cxx14_info}
+\alias{cxx17_info}
+\alias{fc_info}
 \title{R CMD Config}
 \usage{
-r_test_cc()
+cc_info()
 
-r_test_cxx()
+cxx_info()
 
-r_test_cxx11()
+cxx11_info()
 
-r_test_cxx14()
+cxx14_info()
 
-r_test_cxx17()
+cxx17_info()
 
-r_test_fc()
+fc_info()
 }
 \description{
 Cross-platform wrappers for `R CMD config` to lookup the availability
@@ -30,6 +30,6 @@ of the compiler.
 # This runs 'R CMD CONFIG CXX'
 r_cmd_config("CXX")
 
-# Show default C++ compiler:
-r_test_cxx()
+# Show C++ config:
+cxx_info()
 }

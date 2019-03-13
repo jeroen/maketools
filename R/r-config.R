@@ -9,49 +9,49 @@
 #' @examples # This runs 'R CMD CONFIG CXX'
 #' r_cmd_config("CXX")
 #'
-#' # Show default C++ compiler:
-#' r_test_cxx()
-r_test_cc <- function(){
-  r_make_test('CC', 'CFLAGS')
+#' # Show C++ config:
+#' cxx_info()
+cc_info <- function(){
+  make_get_info('CC', 'CFLAGS')
 }
 
 #' @export
 #' @rdname r_config
-r_test_cxx <- function(){
-  r_make_test('CXX', 'CXXFLAGS')
+cxx_info <- function(){
+  make_get_info('CXX', 'CXXFLAGS')
 }
 
 #' @export
 #' @rdname r_config
-r_test_cxx11 <- function(){
-  r_make_test('CXX11', 'CXX11FLAGS', 'CXX11STD')
+cxx11_info <- function(){
+  make_get_info('CXX11', 'CXX11FLAGS', 'CXX11STD')
 }
 
 #' @export
 #' @rdname r_config
-r_test_cxx14 <- function(){
-  r_make_test('CXX14', 'CXX14FLAGS', 'CXX14STD')
+cxx14_info <- function(){
+  make_get_info('CXX14', 'CXX14FLAGS', 'CXX14STD')
 }
 
 #' @export
 #' @rdname r_config
-r_test_cxx17 <- function(){
-  r_make_test('CXX17', 'CXX17FLAGS', 'CXX17STD')
+cxx17_info <- function(){
+  make_get_info('CXX17', 'CXX17FLAGS', 'CXX17STD')
 }
 
 #' @export
 #' @rdname r_config
-r_test_fc <- function(){
-  r_make_test('FC', 'FCFLAGS')
+fc_info <- function(){
+  make_get_info('FC', 'FCFLAGS')
 }
 
-r_make_test <-function(VAR, FLAGS = NULL, STD = NULL, args = '--version'){
+make_get_info <-function(VAR, FLAGS = NULL, STD = NULL, args = '--version'){
   PATH <- r_cmd_config(VAR)
   if(length(FLAGS))
     FLAGS <- r_cmd_config(FLAGS)
   if(length(STD))
     STD <- r_cmd_config(STD)
-  info <- r_make_call(PATH, args)
+  info <- make_call(PATH, args)
   version <- as_text(info$stdout)
   list(
     path = PATH,

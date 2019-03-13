@@ -23,7 +23,8 @@ r_cmd_config <- function(VAR = '--all'){
 #' @rdname r_cmd_config
 #' @param cmd command to invoke (may be a variable)
 #' @param args additional arguments for `cmd`
-r_make_call <- function(cmd = '$(CC)', args = '--version'){
+#' @examples make_call('$(CXX)', '--version')
+make_call <- function(cmd = '$(CC)', args = '--version'){
   testmake <- ifelse(is_solaris(), 'solaris.make', 'test.make')
   makefile <- safe_path(system.file(testmake, package = 'makeconf'))
   args <- paste(args, collapse = " ")
@@ -37,8 +38,8 @@ r_make_call <- function(cmd = '$(CC)', args = '--version'){
 #' @export
 #' @rdname r_cmd_config
 #' @examples # Where your makeconf is stored:
-#' r_make_info()
-r_make_info <- function(){
+#' make_info()
+make_info <- function(){
   name <- r_make_path()
   path <- unname(Sys.which(r_make_path()))
   version <- if(nchar(path)){
