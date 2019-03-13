@@ -2,15 +2,16 @@
 % Please edit documentation in R/r-compile.R
 \name{r-compile}
 \alias{r-compile}
-\alias{r_compile}
+\alias{make}
 \title{Compile source files}
 \usage{
-r_compile(src, obj = NULL)
+make(target = "all", makefile = r_makeconf_path())
 }
 \arguments{
-\item{src}{path to source file}
+\item{target}{name of output file that you want to make}
 
-\item{obj}{optional name of output file}
+\item{makefile}{path to the `Makefile`. Defaults to the `Makeconf` which
+R uses when building R packages.}
 }
 \description{
 Compile C / C++ / Fortran source files using the compiler configured
@@ -24,6 +25,7 @@ way to test if your compiler is working.
 \examples{
 # Test the CXX compiler
 testprog <- '#include <iostream>\\nint main() {std::cout << "Hello World!";}'
-writeLines(testprog, con = 'test.cc')
-r_compile('test.cc')
+writeLines(testprog, con = 'testprog.cc')
+make('testprog')
+system('./testprog')
 }

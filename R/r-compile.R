@@ -10,17 +10,17 @@
 #' @export
 #' @name r-compile
 #' @rdname r-compile
-#' @param src path to source file
-#' @param obj optional name of output file
+#' @param target name of output file that you want to make
+#' @param makefile path to the `Makefile`. Defaults to the `Makeconf` which
+#' R uses when building R packages.
 #' @examples # Test the CXX compiler
 #' testprog <- '#include <iostream>\nint main() {std::cout << "Hello World!";}'
-#' writeLines(testprog, con = 'test.cc')
-#' r_compile('test.cc')
-r_compile <- function(src, obj = NULL){
-  if(!length(obj))
-    obj <- sub('\\.(c|cc|cpp|f|f90|f95)$', '.o', src)
-  status <- sys::exec_wait(r_make_path(), c(obj, '-f', r_makeconf_path()))
+#' writeLines(testprog, con = 'testprog.cc')
+#' make('testprog')
+#' system('./testprog')
+make <- function(target = 'all', makefile = r_makeconf_path()){
+  status <- sys::exec_wait(r_make_path(), c(target, '-f', makefile))
   if(!identical(status, 0L))
-    stop("Failed to compile object(s): ", paste(obj, collapse = ","), call. = FALSE)
-  return(obj)
+    stop("Failed to compile object(s): ", paste(target, collapse = ","), call. = FALSE)
+  return(target)
 }
