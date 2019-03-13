@@ -13,15 +13,15 @@ make_call(cmd = "$(CC)", args = "--version")
 make_info()
 }
 \arguments{
-\item{VAR}{value passed to `R CMD config` such as `CXX` or `FC`}
+\item{VAR}{value passed to \code{R CMD config} such as \code{CXX} or \code{FC}}
 
 \item{cmd}{command to invoke (may be a variable)}
 
-\item{args}{additional arguments for `cmd`}
+\item{args}{additional arguments for \code{cmd}}
 }
 \description{
-Wrappers for `make` and `R CMD config` to lookup and test make variables
-from your local `Makeconf` file.
+Wrappers for \code{make} and \code{R CMD config} to lookup and test make variables
+from your local \code{Makeconf} file.
 }
 \examples{
 make_call('$(CXX)', '--version')

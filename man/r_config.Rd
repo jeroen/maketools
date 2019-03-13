@@ -23,7 +23,7 @@ cxx17_info()
 fc_info()
 }
 \description{
-Cross-platform wrappers for `R CMD config` to lookup the availability
+Cross-platform wrappers for \code{R CMD config} to lookup the availability
 of the compiler.
 }
 \examples{

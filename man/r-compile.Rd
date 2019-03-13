@@ -10,7 +10,7 @@ make(target = "all", makefile = r_makeconf_path())
 \arguments{
 \item{target}{name of output file that you want to make}
 
-\item{makefile}{path to the `Makefile`. Defaults to the `Makeconf` which
+\item{makefile}{path to the \code{Makefile}. Defaults to the \code{Makeconf} which
 R uses when building R packages.}
 }
 \description{
@@ -18,7 +18,7 @@ Compile C / C++ / Fortran source files using the compiler configured
 by R Makeconf.
 }
 \details{
-This program literally calls `make yourfile.o -f /path/to/R/Makeconf`.
+This program literally calls \code{make yourfile.o -f /path/to/R/Makeconf}.
 This is exacltly what R does when building packages and hence the best
 way to test if your compiler is working.
 }
