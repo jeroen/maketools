@@ -41,7 +41,7 @@ make_call <- function(cmd = '$(CC)', args = '--version'){
 #' make_info()
 make_info <- function(){
   name <- r_make_path()
-  path <- unname(Sys.which(r_make_path()))
+  path <- unname(Sys.which(name))
   version <- if(nchar(path)){
     info <- r_exec_make('--version')
     if(info$status == 0){
