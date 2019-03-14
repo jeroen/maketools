@@ -74,11 +74,16 @@ pkg_info <- function(pkg = 'libcurl'){
 }
 
 pkgconfig_path <- function(){
-  Sys.getenv('PKG_CONFIG_PATH', 'pkg-config')
+  Sys.getenv('PKG_CONFIG_PATH', paste0(Sys.getenv('BINPREF'), 'pkg-config'))
 }
 
 pkg_config_call <- function(args){
-  out <- sys::exec_internal(pkgconfig_path(), args, error = FALSE)
+  # For now, we call via make on Windows to support msys2 paths
+  out <- if(is_windows()){
+    make_call(pkgconfig_path(), args)
+  } else {
+    sys::exec_internal(pkgconfig_path(), args)
+  }
   if(out$status != 0){
     stop(rawToChar(out$stderr), call. = FALSE)
   }
@@ -89,4 +94,8 @@ df_as_tibble <- function(df){
   stopifnot(is.data.frame(df))
   class(df) <- c("tbl_df", "tbl", "data.frame")
   df
+}
+
+is_windows <- function(){
+  .Platform$OS.type == 'windows'
 }
