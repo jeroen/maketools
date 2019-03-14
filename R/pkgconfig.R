@@ -5,9 +5,9 @@
 #'
 #' @export
 #' @rdname pkgconfig
-#' @examples # Where your makeconf is stored:
-#' pkg_config_info()
-pkg_config_info <- function(){
+#' @examples # Check if pkg-config is available
+#' pc_info()
+pc_info <- function(){
   name <- pkgconfig_name()
   path <- pkgconfig_path(name, error = FALSE)
   version <- if(nchar(path)){
