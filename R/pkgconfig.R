@@ -33,8 +33,8 @@ pkg_list_all <- function(){
   names <- gsub('\\s+.*', '', txt)
   desc <- gsub('^\\S+\\s+', '', txt)
   srt <- order(names)
-  df <- data.frame (pkg = names, description = desc, stringsAsFactors = FALSE)
-  df_as_tibble(df[order(names),])
+  df <- data.frame (pkg = names[srt], description = desc[srt], stringsAsFactors = FALSE)
+  df_as_tibble(df)
 }
 
 #' @export
