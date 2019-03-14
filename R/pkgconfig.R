@@ -82,7 +82,7 @@ pkg_config_call <- function(args){
   out <- if(is_windows()){
     make_call(pkgconfig_path(), args)
   } else {
-    sys::exec_internal(pkgconfig_path(), args)
+    sys::exec_internal(pkgconfig_path(), args, error = FALSE)
   }
   if(out$status != 0){
     stop(rawToChar(out$stderr), call. = FALSE)
