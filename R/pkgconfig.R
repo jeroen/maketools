@@ -9,7 +9,7 @@
 #' pkg_config_info()
 pkg_config_info <- function(){
   name <- pkgconfig_name()
-  path <- pkgconfig_path(name)
+  path <- pkgconfig_path(name, error = FALSE)
   version <- if(nchar(path)){
     pkg_config_call('--version')
   }
@@ -80,8 +80,11 @@ pkgconfig_name <- function(){
   ifelse(is_windows(), make_echo('$(BINPREF)pkg-config'), 'pkg-config')
 }
 
-pkgconfig_path <- function(name = pkgconfig_name()){
-  lookup_path(name)
+pkgconfig_path <- function(name = pkgconfig_name(), error = TRUE){
+  pc <- lookup_path(name)
+  if(!nchar(pc) && isTRUE(error))
+    stop("pkg-config is not available on this system", call. = FALSE)
+  return(pc)
 }
 
 lookup_path <- function(name){
@@ -93,7 +96,8 @@ lookup_path <- function(name){
 }
 
 pkg_config_call <- function(args){
-  out <- sys::exec_internal(pkgconfig_path(), args, error = FALSE)
+  pc <- pkgconfig_path()
+  out <- sys::exec_internal(pc, args, error = FALSE)
   if(out$status != 0){
     stop(rawToChar(out$stderr), call. = FALSE)
   }
