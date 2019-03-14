@@ -8,8 +8,8 @@
 #' @examples # Where your makeconf is stored:
 #' pkg_config_info()
 pkg_config_info <- function(){
-  name <- pkgconfig_path()
-  path <- unname(Sys.which(name))
+  name <- pkgconfig_name()
+  path <- pkgconfig_path()
   version <- if(nchar(path)){
     pkg_config_call('--version')
   }
@@ -73,17 +73,24 @@ pkg_info <- function(pkg = 'libcurl'){
   )
 }
 
-pkgconfig_path <- function(){
+pkgconfig_name <- function(){
   Sys.getenv('PKG_CONFIG_PATH', paste0(Sys.getenv('BINPREF'), 'pkg-config'))
 }
 
-pkg_config_call <- function(args){
-  # For now, we call via make on Windows to support msys2 paths
-  out <- if(is_windows()){
-    make_call(pkgconfig_path(), args)
+pkgconfig_path <- function(){
+  lookup_path(pkgconfig_name())
+}
+
+lookup_path <- function(name){
+  if(is_windows() && grepl("^/", name)){
+    as_text(make_call('/bin/cygpath', c('-m', name))$stdout)
   } else {
-    sys::exec_internal(pkgconfig_path(), args, error = FALSE)
+    unname(Sys.which(name))
   }
+}
+
+pkg_config_call <- function(args){
+  out <- sys::exec_internal(pkgconfig_path(), args, error = FALSE)
   if(out$status != 0){
     stop(rawToChar(out$stderr), call. = FALSE)
   }
