@@ -14,7 +14,8 @@ pc_info <- function(){
     pkg_config_call('--version')
   }
   pc_path <- if(nchar(path)){
-    pkg_config_call(c('--variable', 'pc_path', 'pkg-config'))
+    # Solaris has super old pkg-config that doesn't support this
+    tryCatch(pkg_config_call(c('--variable', 'pc_path', 'pkg-config')), error = function(e){NA})
   }
   list(
     name = name,
