@@ -74,7 +74,10 @@ pkg_info <- function(pkg = 'libcurl'){
 }
 
 pkgconfig_name <- function(){
-  Sys.getenv('PKG_CONFIG_PATH', paste0(Sys.getenv('BINPREF'), 'pkg-config'))
+  pc <- Sys.getenv('PKG_CONFIG_PATH', "")
+  if(nchar(pc))
+    return(pc)
+  ifelse(is_windows(), make_echo('$(BINPREF)pkg-config'), 'pkg-config')
 }
 
 pkgconfig_path <- function(){
@@ -84,7 +87,7 @@ pkgconfig_path <- function(){
 lookup_path <- function(name){
   if(is_windows() && grepl("^/", name)){
     as_text(make_call('/bin/cygpath', c('-m', name))$stdout)
-  } else {
+  } else {pkg
     unname(Sys.which(name))
   }
 }

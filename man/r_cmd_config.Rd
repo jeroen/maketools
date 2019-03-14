@@ -11,7 +11,7 @@ r_cmd_config(VAR = "--all")
 
 make_call(cmd = "$(CC)", args = "--version")
 
-make_echo(VAR = "$(CC)")
+make_echo(cmd = "$(CC)")
 
 make_info()
 }
