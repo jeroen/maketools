@@ -3,12 +3,15 @@
 \name{r_cmd_config}
 \alias{r_cmd_config}
 \alias{make_call}
+\alias{make_echo}
 \alias{make_info}
 \title{Check your makeconf}
 \usage{
 r_cmd_config(VAR = "--all")
 
 make_call(cmd = "$(CC)", args = "--version")
+
+make_echo(VAR = "$(CC)")
 
 make_info()
 }

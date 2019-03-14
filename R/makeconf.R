@@ -37,6 +37,18 @@ make_call <- function(cmd = '$(CC)', args = '--version'){
 
 #' @export
 #' @rdname r_cmd_config
+make_echo <- function(VAR = '$(CC)'){
+  testmake <- ifelse(is_solaris(), 'solaris.make', 'test.make')
+  makefile <- safe_path(system.file(testmake, package = 'makeconf'))
+  vars <- c(
+    paste0('R_MAKECONF=', r_makeconf_path()),
+    paste0('PROG=', VAR))
+  out <- r_exec_make(c('print-value', '-f', makefile, vars))
+  as_text(out$stdout)
+}
+
+#' @export
+#' @rdname r_cmd_config
 #' @examples # Where your makeconf is stored:
 #' make_info()
 make_info <- function(){
