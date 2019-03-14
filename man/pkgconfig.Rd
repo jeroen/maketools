@@ -2,7 +2,7 @@
 % Please edit documentation in R/pkgconfig.R
 \name{pc_info}
 \alias{pc_info}
-\alias{pkg_list_all}
+\alias{pkg_list}
 \alias{pkg_exists}
 \alias{pkg_version}
 \alias{pkg_cflags}
@@ -12,7 +12,7 @@
 \usage{
 pc_info()
 
-pkg_list_all()
+pkg_list()
 
 pkg_exists(pkg = "libcurl")
 
@@ -36,5 +36,5 @@ libraries installed on your system.
 \examples{
 # Check if pkg-config is available
 pc_info()
-pkg_list_all()
+pkg_list()
 }

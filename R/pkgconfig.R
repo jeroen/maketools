@@ -28,8 +28,8 @@ pc_info <- function(){
 
 #' @export
 #' @rdname pkgconfig
-#' @examples pkg_list_all()
-pkg_list_all <- function(){
+#' @examples pkg_list()
+pkg_list <- function(){
   txt <- pkg_config_call('--list-all')
   names <- gsub('\\s+.*', '', txt)
   desc <- gsub('^\\S+\\s+', '', txt)
