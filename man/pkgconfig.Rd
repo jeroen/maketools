@@ -35,6 +35,6 @@ libraries installed on your system.
 }
 \examples{
 # Where your makeconf is stored:
-pkgconfig_info()
+pkg_config_info()
 pkg_list_all()
 }

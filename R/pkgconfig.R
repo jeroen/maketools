@@ -6,7 +6,7 @@
 #' @export
 #' @rdname pkgconfig
 #' @examples # Where your makeconf is stored:
-#' pkgconfig_info()
+#' pkg_config_info()
 pkg_config_info <- function(){
   name <- pkgconfig_path()
   path <- unname(Sys.which(name))
