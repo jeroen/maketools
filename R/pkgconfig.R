@@ -9,7 +9,7 @@
 #' pkg_config_info()
 pkg_config_info <- function(){
   name <- pkgconfig_name()
-  path <- pkgconfig_path()
+  path <- pkgconfig_path(name)
   version <- if(nchar(path)){
     pkg_config_call('--version')
   }
@@ -80,14 +80,14 @@ pkgconfig_name <- function(){
   ifelse(is_windows(), make_echo('$(BINPREF)pkg-config'), 'pkg-config')
 }
 
-pkgconfig_path <- function(){
-  lookup_path(pkgconfig_name())
+pkgconfig_path <- function(name = pkgconfig_name()){
+  lookup_path(name)
 }
 
 lookup_path <- function(name){
   if(is_windows() && grepl("^/", name)){
     as_text(make_call('/bin/cygpath', c('-m', name))$stdout)
-  } else {pkg
+  } else {
     unname(Sys.which(name))
   }
 }
