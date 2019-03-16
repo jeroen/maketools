@@ -27,8 +27,8 @@ find_rtools <- function(){
   if(!is_windows()){
     stop("Rtools is only needed on Windows")
   }
-  rtools32 <- read_registery("SOFTWARE\\R-core\\Rtools", view = "64-bit")
-  rtools64 <- read_registery("SOFTWARE\\R-core\\Rtools", view = "32-bit")
+  rtools64 <- read_registery("SOFTWARE\\R-core\\Rtools", view = "64-bit")
+  rtools32 <- read_registery("SOFTWARE\\R-core\\Rtools", view = "32-bit")
   list(rtools64, rtools32)
 }
 
