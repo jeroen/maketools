@@ -8,6 +8,7 @@
 #' @importFrom sys as_text exec_internal
 #' @param VAR value passed to `R CMD config` such as `CXX` or `FC`
 r_cmd_config <- function(VAR = '--all'){
+  assert_make_available()
   R <- file.path(R.home('bin'), 'R')
   outcon <- rawConnection(raw(0), "r+")
   on.exit(close(outcon), add = TRUE)
@@ -70,7 +71,15 @@ make_info <- function(){
   )
 }
 
+assert_make_available <- function(){
+  path <- Sys.which(r_make_path())
+  if(!nchar(path)){
+    stop("Did not find 'make' on the PATH.", call. = FALSE)
+  }
+}
+
 r_exec_make <- function(args){
+  assert_make_available()
   exec_internal(r_make_path(), args, error = FALSE)
 }
 
