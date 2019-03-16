@@ -89,10 +89,15 @@ pkgconfig_path <- function(name = pkgconfig_name(), error = TRUE){
 }
 
 lookup_path <- function(name){
-  if(is_windows() && grepl("^/", name)){
+  out <- if(is_windows() && grepl("^/", name)){
     as_text(make_call('/bin/cygpath', c('-m', name))$stdout)
   } else {
     unname(Sys.which(name))
+  }
+  if(length(out) && nchar(out)){
+    return(out)
+  } else {
+    return(NA)
   }
 }
 
