@@ -33,7 +33,6 @@ find_rtools <- function(){
 }
 
 read_registery <- function(key, view){
-  hive <- match.arg(hive)
   tryCatch(utils::readRegistry(key, hive = 'HCU', view = view, maxdepth = 2), error = function(e){
     tryCatch(utils::readRegistry(key, hive = 'HLM', view = view, maxdepth = 2), error = function(e){
       NULL
