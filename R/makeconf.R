@@ -54,7 +54,7 @@ make_echo <- function(cmd = '$(CC)'){
 make_info <- function(){
   name <- r_make_path()
   path <- lookup_path(name)
-  version <- if(nchar(path)){
+  version <- if(!is.na(path)){
     info <- r_exec_make('--version')
     if(info$status == 0){
       as_text(info$stdout)[1]
