@@ -11,7 +11,7 @@ print_diagnostics <- function(){
   }
   minfo <- make_info()
   if(is.na(minfo$path)){
-    packageStartupMessage('Dit not find "make" on the path. R will not be able to compile.')
+    packageStartupMessage('No "make" on the PATH. R will not be able to compile code')
     return()
   }
   packageStartupMessage(sprintf("Found %s in %s", minfo$version, minfo$path))
