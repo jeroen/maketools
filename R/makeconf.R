@@ -54,7 +54,8 @@ make_echo <- function(cmd = '$(CC)'){
 make_info <- function(){
   name <- r_make_path()
   path <- unname(Sys.which(name))
-  version <- if(!nchar(path)){
+  available <- as.logical(nchar(path))
+  version <- if(available){
     info <- r_exec_make('--version')
     if(info$status == 0){
       as_text(info$stdout)[1]
@@ -62,6 +63,7 @@ make_info <- function(){
   }
   list(
     name = name,
+    available = available,
     path = path,
     version = version,
     makeconf = r_makeconf_path()

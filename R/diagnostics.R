@@ -10,7 +10,7 @@ print_diagnostics <- function(){
     packageStartupMessage(sprintf("This R for Windows was compiled with %s", gcc_required))
   }
   minfo <- make_info()
-  if(is.na(minfo$path)){
+  if(minfo$available){
     packageStartupMessage('No "make" on the PATH. R will not be able to compile code')
     return()
   }
