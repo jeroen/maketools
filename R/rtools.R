@@ -25,7 +25,7 @@ rtools_info <- function(){
     } else {
       available <- FALSE
       api <- NA
-      compatible <- FALSE
+      compatible <- NA
     }
 
 
@@ -82,6 +82,7 @@ rtools_install <- function(silent = FALSE){
 #' @export
 #' @rdname rtools
 rtools_setup <- function(){
+  assert_windows()
   info <- rtools_find_gcc(Sys.getenv('R_COMPILED_BY'))
   if(!isTRUE(info$available)){
     stop("Rtools not found. Please run: rtools_install()")
@@ -110,7 +111,7 @@ rtools_setup <- function(){
 rtools_find_gcc <- function(need_gcc){
   info <- rtools_info()
   for(x in info){
-    if(isTRUE(info$compatible)) {
+    if(isTRUE(x$compatible)) {
       return(x)
     }
   }
