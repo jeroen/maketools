@@ -3,10 +3,9 @@
 #' Lookup and test installations of Rtools in Windows registry.
 #'
 #' @export
+#' @rdname rtools
 find_rtools <- function(){
-  if(!is_windows()){
-    stop("Rtools is only needed on Windows")
-  }
+  assert_windows()
   installs <- lapply(c("64-bit", "32-bit"), function(view){
     x <- read_registery("SOFTWARE\\R-core\\Rtools", view = view)
     if(!length(x))
@@ -29,6 +28,34 @@ find_rtools <- function(){
   Filter(length, installs)
 }
 
+#' @export
+#' @rdname rtools
+#' @param silent perform fully automatic unattended installation
+install_rtools <- function(silent = FALSE){
+  assert_windows()
+  need_gcc <- Sys.getenv('R_COMPILED_BY')
+  if(!nchar(need_gcc)){
+    stop("Did not find R_COMPILED_BY variable")
+  }
+  info <- try(find_rtools())
+  if(grepl('4.9.3', need_gcc)){
+    message('Need GCC 4.9.3... downloading rtools35...')
+    url <- 'https://cloud.r-project.org/bin/windows/Rtools/Rtools35.exe'
+  } else if(grepl('8\\.\\d\\.\\d', need_gcc)){
+    message('Need GCC 8... downloading rtools40...')
+    url <- 'https://cran.r-project.org/bin/windows/testing/rtools40-x86_64.exe'
+  } else {
+    stop("Unsupported version of GCC: ", need_gcc)
+  }
+  installer <- basename(url)
+  on.exit(unlink(installer))
+  download.file(url, installer, mode = 'wb')
+  args <- if(isTRUE(silent)){
+    c('/VERYSILENT', '-NoNewWindow', '-Wait')
+  }
+  status <- sys::exec_wait(installer, as.character(args))
+}
+
 read_registery <- function(key, view){
   tryCatch(utils::readRegistry(key, hive = 'HCU', view = view, maxdepth = 2), error = function(e){
     tryCatch(utils::readRegistry(key, hive = 'HLM', view = view, maxdepth = 2), error = function(e){
@@ -44,5 +71,11 @@ rtools_cc_version <- function(cc){
   } else{
     warning(as_text(c(out$stdout, out$stderr)), immediate. = TRUE)
     NULL
+  }
+}
+
+assert_windows <- function(){
+  if(!is_windows()){
+    stop("Rtools is only needed on Windows")
   }
 }

@@ -2,9 +2,15 @@
 % Please edit documentation in R/rtools.R
 \name{find_rtools}
 \alias{find_rtools}
+\alias{install_rtools}
 \title{Find Rtools}
 \usage{
 find_rtools()
+
+install_rtools(silent = TRUE)
+}
+\arguments{
+\item{silent}{perform fully automatic unattended installation}
 }
 \description{
 Lookup and test installations of Rtools in Windows registry.
