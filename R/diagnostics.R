@@ -17,8 +17,13 @@ print_diagnostics <- function(){
   packageStartupMessage(sprintf("Found %s in %s", minfo$version, minfo$path))
   ccinfo <- cc_info()
   if(ccinfo$available){
-    packageStartupMessage(sprintf("Using compiler %s - %s", ccinfo$path, ccinfo$version))
+    version <- strip_banner(ccinfo$version)
+    packageStartupMessage(sprintf("Using compiler %s (%s)", ccinfo$path, version))
   } else {
     packageStartupMessage(sprintf("Compiler %s not available. Cannot compile code.", ccinfo$path))
   }
+}
+
+strip_banner <- function(str){
+  sub(" (.*) ", " ", str)
 }

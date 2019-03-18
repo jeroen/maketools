@@ -77,7 +77,7 @@ read_registery <- function(key, view){
 rtools_cc_version <- function(cc){
   out <- sys::exec_internal(cc, '--version', error = FALSE)
   if(out$status == 0){
-    sub(" (.*) ", " ", as_text(out$stdout)[1])
+    strip_banner(as_text(out$stdout)[1])
   } else{
     warning(as_text(c(out$stdout, out$stderr)), immediate. = TRUE)
     NULL
