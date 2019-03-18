@@ -22,20 +22,3 @@ print_diagnostics <- function(){
     packageStartupMessage(sprintf("Compiler %s not available. Cannot compile code.", ccinfo$path))
   }
 }
-
-find_rtools <- function(){
-  if(!is_windows()){
-    stop("Rtools is only needed on Windows")
-  }
-  rtools64 <- read_registery("SOFTWARE\\R-core\\Rtools", view = "64-bit")
-  rtools32 <- read_registery("SOFTWARE\\R-core\\Rtools", view = "32-bit")
-  list(rtools64, rtools32)
-}
-
-read_registery <- function(key, view){
-  tryCatch(utils::readRegistry(key, hive = 'HCU', view = view, maxdepth = 2), error = function(e){
-    tryCatch(utils::readRegistry(key, hive = 'HLM', view = view, maxdepth = 2), error = function(e){
-      NULL
-    })
-  })
-}
