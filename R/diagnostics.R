@@ -15,6 +15,14 @@ print_diagnostics <- function(){
     return()
   }
   packageStartupMessage(sprintf("Found %s in %s", minfo$version, minfo$path))
+
+  pcinfo <- pc_info()
+  if(pcinfo$available){
+    packageStartupMessage(sprintf("Found pkg-config %s in %s", pcinfo$version, pcinfo$path))
+  } else {
+    packageStartupMessage(sprintf("No pkg-config found on the path."))
+  }
+
   ccinfo <- cc_info()
   if(ccinfo$available){
     version <- strip_banner(ccinfo$version)

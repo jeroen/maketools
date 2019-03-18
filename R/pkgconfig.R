@@ -22,6 +22,7 @@ pc_info <- function(){
     path = path,
     version = version,
     pc_path = pc_path,
+    available = nchar(path),
     pkg_config_path = Sys.getenv('PKG_CONFIG_PATH')
   )
 }
