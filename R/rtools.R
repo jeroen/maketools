@@ -18,12 +18,25 @@ rtools_info <- function(){
     binpref <- normalizePath(binpref, winslash = '/', mustWork = FALSE)
     cc <- paste0(install, ifelse(version >= 4, '\\mingw32\\bin\\gcc', '\\mingw_32\\bin\\gcc'))
     gcc_version <- rtools_cc_version(cc)
+    if(is_string(gcc_version)){
+      available <- TRUE
+      api <- gcc_api(gcc_version)
+      compatible <- gcc_api(Sys.getenv('R_COMPILED_BY')) == api
+    } else {
+      available <- FALSE
+      api <- NA
+      compatible <- FALSE
+    }
+
+
     list(
       rtools = version,
       compiler = gcc_version,
+      api = api,
       PATH = bindir,
       BINPREF = binpref,
-      available = is_string(gcc_version)
+      available = available,
+      compatible = compatible
     )
   })
   Filter(length, installs)
@@ -93,10 +106,11 @@ rtools_setup <- function(){
   print_diagnostics()
 }
 
+
 rtools_find_gcc <- function(need_gcc){
   info <- rtools_info()
   for(x in info){
-    if(grepl(x$compiler, need_gcc)) {
+    if(isTRUE(info$compatible)) {
       return(x)
     }
   }
@@ -124,5 +138,16 @@ rtools_cc_version <- function(cc){
 assert_windows <- function(){
   if(!is_windows()){
     stop("Rtools is only needed on Windows")
+  }
+}
+
+gcc_api <- function(str){
+  str <- sub("gcc", "", str)
+  str <- sub("\\s+", "", str)
+  api <- as.numeric_version(str)
+  if(api < 5){
+    as.numeric_version(substring(api, 1,3))
+  } else {
+    as.numeric_version(gsub("\\..*", "", str))
   }
 }
