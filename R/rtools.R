@@ -4,6 +4,7 @@
 #'
 #' @export
 #' @rdname rtools
+#' @importFrom utils download.file
 rtools_find <- function(){
   assert_windows()
   installs <- lapply(c("64-bit", "32-bit"), function(view){
