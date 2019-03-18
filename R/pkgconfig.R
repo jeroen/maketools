@@ -96,7 +96,7 @@ lookup_path <- function(name){
     unname(Sys.which(name))
   }
   if(length(out) && nchar(out)){
-    return(out)
+    normalizePath(out)
   } else {
     return(NA)
   }
