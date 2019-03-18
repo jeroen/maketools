@@ -7,9 +7,10 @@ find_rtools <- function(){
   if(!is_windows()){
     stop("Rtools is only needed on Windows")
   }
-  rtools64 <- read_registery("SOFTWARE\\R-core\\Rtools", view = "64-bit")
-  rtools32 <- read_registery("SOFTWARE\\R-core\\Rtools", view = "32-bit")
-  installs <- lapply(list(rtools32, rtools64), function(x){
+  installs <- lapply(c("64-bit", "32-bit"), function(view){
+    x <- read_registery("SOFTWARE\\R-core\\Rtools", view = view)
+    if(!length(x))
+      return(NULL)
     version <- as.numeric_version(x[['Current Version']])
     install <- x[['InstallPath']]
     bindir <- paste0(install, ifelse(version >= 4, '\\usr\\bin', '\\bin'))
@@ -25,7 +26,7 @@ find_rtools <- function(){
       available = length(gcc_version) && nchar(gcc_version)
     )
   })
-  installs
+  Filter(length, installs)
 }
 
 read_registery <- function(key, view){
