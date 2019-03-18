@@ -19,7 +19,7 @@ print_diagnostics <- function(){
   pcinfo <- pc_info()
   if(pcinfo$available){
     packageStartupMessage(sprintf("Found pkg-config %s in %s", pcinfo$version, pcinfo$path))
-  } else {
+  } else if(!is_windows()) {
     packageStartupMessage(sprintf("No pkg-config found on the path."))
   }
 
