@@ -55,7 +55,7 @@ make_echo <- function(cmd = '$(CC)'){
 make_info <- function(){
   name <- r_make_path()
   path <- unname(Sys.which(name))
-  available <- as.logical(nchar(path))
+  available <- is_string(path)
   version <- if(available){
     info <- r_exec_make('--version')
     if(info$status == 0){
@@ -73,7 +73,7 @@ make_info <- function(){
 
 assert_make_available <- function(){
   path <- Sys.which(r_make_path())
-  if(!nchar(path)){
+  if(!is_string(path)){
     stop("Did not find 'make' on the PATH.", call. = FALSE)
   }
 }

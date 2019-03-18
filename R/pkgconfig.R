@@ -10,10 +10,10 @@
 pc_info <- function(){
   name <- pkgconfig_name()
   path <- pkgconfig_path(name, error = FALSE)
-  version <- if(nchar(path)){
+  version <- if(is_string(path)){
     pkg_config_call('--version')
   }
-  pc_path <- if(nchar(path)){
+  pc_path <- if(is_string(path)){
     # Solaris has super old pkg-config that doesn't support this
     tryCatch(pkg_config_call(c('--variable', 'pc_path', 'pkg-config')), error = function(e){NA})
   }
@@ -22,7 +22,7 @@ pc_info <- function(){
     path = path,
     version = version,
     pc_path = pc_path,
-    available = nchar(path),
+    available = is_string(path),
     pkg_config_path = Sys.getenv('PKG_CONFIG_PATH')
   )
 }
@@ -77,14 +77,14 @@ pkg_info <- function(pkg = 'libcurl'){
 
 pkgconfig_name <- function(){
   pc <- Sys.getenv('PKG_CONFIG_PATH', "")
-  if(nchar(pc))
+  if(is_string(pc))
     return(pc)
   ifelse(is_windows(), make_echo('$(BINPREF)pkg-config'), 'pkg-config')
 }
 
 pkgconfig_path <- function(name = pkgconfig_name(), error = TRUE){
   pc <- lookup_path(name)
-  if(!nchar(pc) && isTRUE(error))
+  if(!is_string(pc) && isTRUE(error))
     stop("pkg-config is not available on this system", call. = FALSE)
   return(pc)
 }
@@ -95,7 +95,7 @@ lookup_path <- function(name){
   } else {
     unname(Sys.which(name))
   }
-  if(length(out) && nchar(out)){
+  if(is_string(out)){
     normalizePath(out)
   } else {
     return(NA)

@@ -23,7 +23,7 @@ rtools_find <- function(){
       compiler = gcc_version,
       PATH = bindir,
       BINPREF = binpref,
-      available = length(gcc_version) && nchar(gcc_version)
+      available = is_string(gcc_version)
     )
   })
   Filter(length, installs)
@@ -36,7 +36,7 @@ rtools_find <- function(){
 rtools_install <- function(silent = FALSE){
   assert_windows()
   need_gcc <- Sys.getenv('R_COMPILED_BY')
-  if(!nchar(need_gcc)){
+  if(!is_string(need_gcc)){
     stop("Did not find R_COMPILED_BY variable")
   }
   info <- try(rtools_find())

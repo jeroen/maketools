@@ -35,3 +35,7 @@ print_diagnostics <- function(){
 strip_banner <- function(str){
   sub("\\s*\\(.*\\)", "", str)
 }
+
+is_string <- function(str){
+  is.character(str) && length(str) && nchar(str)
+}
