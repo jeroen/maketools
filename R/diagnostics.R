@@ -14,7 +14,8 @@ print_diagnostics <- function(){
     packageStartupMessage('No "make" on the PATH. R will not be able to compile code')
     return()
   }
-  packageStartupMessage(sprintf("Found %s in %s", minfo$version, minfo$path))
+  mversion <- ifelse(is_string(minfo$version), minfo$version, "make")
+  packageStartupMessage(sprintf("Found %s in %s", mversion, minfo$path))
 
   pcinfo <- pc_info()
   if(pcinfo$available){
