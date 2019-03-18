@@ -47,13 +47,18 @@ install_rtools <- function(silent = FALSE){
   } else {
     stop("Unsupported version of GCC: ", need_gcc)
   }
-  installer <- basename(url)
+  installer <- file.path(tempdir(), basename(url))
   on.exit(unlink(installer))
   download.file(url, installer, mode = 'wb')
   args <- if(isTRUE(silent)){
-    c('/VERYSILENT', '-NoNewWindow', '-Wait')
+    c('/VERYSILENT', '-Wait')
+  } else {
+    c('-NoWait')
   }
-  status <- sys::exec_wait(installer, as.character(args))
+
+  # Wait but don't kill the installer when user interrupts
+  pid <- sys::exec_background(installer, as.character(args))
+  if(identical(sys::exec_status(pid), 0L)) message("Success!")
 }
 
 read_registery <- function(key, view){
