@@ -25,5 +25,5 @@ print_diagnostics <- function(){
 }
 
 strip_banner <- function(str){
-  sub(" (.*) ", " ", str)
+  sub("\\s*\\(.*\\)", "", str)
 }
