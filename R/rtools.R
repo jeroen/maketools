@@ -4,7 +4,7 @@
 #'
 #' @export
 #' @rdname rtools
-find_rtools <- function(){
+rtools_find <- function(){
   assert_windows()
   installs <- lapply(c("64-bit", "32-bit"), function(view){
     x <- read_registery("SOFTWARE\\R-core\\Rtools", view = view)
@@ -30,14 +30,21 @@ find_rtools <- function(){
 
 #' @export
 #' @rdname rtools
-#' @param silent perform fully automatic unattended installation
-install_rtools <- function(silent = FALSE){
+#' @param silent perform automatic unattended installation (answer YES
+#' to all questions)
+rtools_install <- function(silent = FALSE){
   assert_windows()
   need_gcc <- Sys.getenv('R_COMPILED_BY')
   if(!nchar(need_gcc)){
     stop("Did not find R_COMPILED_BY variable")
   }
-  info <- try(find_rtools())
+  info <- try(rtools_find())
+  for(x in info){
+    if(grepl(x$compiler, need_gcc)) {
+      message(sprintf("Suitable Rtools %s (%s) already installed: %s", x$rtools, need_gcc, x$PATH))
+      return(invisible())
+    }
+  }
   if(grepl('4.9.3', need_gcc)){
     message('Need GCC 4.9.3... downloading rtools35...')
     url <- 'https://cloud.r-project.org/bin/windows/Rtools/Rtools35.exe'
@@ -52,8 +59,6 @@ install_rtools <- function(silent = FALSE){
   download.file(url, installer, mode = 'wb')
   args <- if(isTRUE(silent)){
     c('/VERYSILENT', '-Wait')
-  } else {
-    c('-NoWait')
   }
 
   # Wait but don't kill the installer when user interrupts
