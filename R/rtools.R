@@ -5,7 +5,7 @@
 #' @export
 #' @rdname rtools
 #' @importFrom utils download.file
-rtools_find <- function(){
+rtools_info <- function(){
   assert_windows()
   installs <- lapply(c("64-bit", "32-bit"), function(view){
     x <- read_registery("SOFTWARE\\R-core\\Rtools", view = view)
@@ -39,13 +39,12 @@ rtools_install <- function(silent = FALSE){
   if(!is_string(need_gcc)){
     stop("Did not find R_COMPILED_BY variable")
   }
-  info <- try(rtools_find())
-  for(x in info){
-    if(grepl(x$compiler, need_gcc)) {
-      message(sprintf("Suitable Rtools %s (%s) already installed: %s", x$rtools, need_gcc, x$PATH))
-      return(invisible())
-    }
+  info <- rtools_find_gcc(need_gcc)
+  if(isTRUE(info$available)) {
+    message(sprintf("Rtools %s with %s already installed: %s", info$rtools, need_gcc, info$PATH))
+    return(invisible())
   }
+
   if(grepl('4.9.3', need_gcc)){
     message('Need GCC 4.9.3... downloading rtools35...')
     url <- 'https://cloud.r-project.org/bin/windows/Rtools/Rtools35.exe'
@@ -65,6 +64,43 @@ rtools_install <- function(silent = FALSE){
   # Wait but don't kill the installer when user interrupts
   pid <- sys::exec_background(installer, as.character(args))
   if(identical(sys::exec_status(pid), 0L)) message("Success!")
+}
+
+#' @export
+#' @rdname rtools
+rtools_setup <- function(){
+  info <- rtools_find_gcc(Sys.getenv('R_COMPILED_BY'))
+  if(!isTRUE(info$available)){
+    stop("Rtools not found. Please run: rtools_install()")
+  }
+  rtools_make <- Sys.which(file.path(info$PATH, 'make'))
+  if(unname(Sys.which('make')) == normalizePath(rtools_make)){
+    message(sprintf("Correct make already on the path: %s", rtools_make))
+  } else {
+    message(sprintf("Adding %s to the PATH", info$PATH))
+    Sys.setenv(PATH = paste0(info$PATH, ';', Sys.getenv('PATH')))
+  }
+  ccinfo <- cc_info()
+  if(!isTRUE(ccinfo$available)){
+    Sys.setenv(BINPREF = info$BINPREF)
+    ccinfo <- cc_info()
+    if(isTRUE(ccinfo$available)){
+      message("Successfully set BINPREF variable")
+    } else {
+      Sys.unsetenv('BINPREF')
+    }
+  }
+  print_diagnostics()
+}
+
+rtools_find_gcc <- function(need_gcc){
+  info <- rtools_info()
+  for(x in info){
+    if(grepl(x$compiler, need_gcc)) {
+      return(x)
+    }
+  }
+  return(NULL)
 }
 
 read_registery <- function(key, view){
