@@ -85,7 +85,11 @@ rtools_setup <- function(){
   assert_windows()
   info <- rtools_find_gcc(Sys.getenv('R_COMPILED_BY'))
   if(!isTRUE(info$available)){
-    stop("Rtools not found. Please run: rtools_install()")
+    if(interactive() && isTRUE(askYesNo('Rtools not found. Would you like to install it now?'))){
+      rtools_install()
+    } else {
+      stop("Rtools not found. Please run: rtools_install()")
+    }
   }
   rtools_make <- Sys.which(file.path(info$PATH, 'make'))
   if(unname(Sys.which('make')) == normalizePath(rtools_make)){
