@@ -1,8 +1,13 @@
-#' Find Rtools
+#' Setup Rtools
 #'
-#' Lookup and test installations of Rtools in Windows registry.
+#' Windows does not ship with a native compiler toolchain. In order to build
+#' R packages with compiled code, we need the R for Windows toolchain bundle
+#' called [Rtools](https://cran.r-project.org/bin/windows/Rtools/). Below are
+#' utilities to check if and where Rtools is installed, and to set the proper
+#' `PATH` and `BINPREF` variables to make it work.
 #'
 #' @export
+#' @name rtools
 #' @rdname rtools
 #' @importFrom utils download.file
 rtools_info <- function(){
@@ -42,6 +47,41 @@ rtools_info <- function(){
   Filter(length, installs)
 }
 
+
+#' @export
+#' @rdname rtools
+rtools_setup <- function(){
+  assert_windows()
+  info <- rtools_find_gcc(Sys.getenv('R_COMPILED_BY'))
+  if(!isTRUE(info$available)){
+    if(interactive() && isTRUE(askYesNo('Rtools not found. Would you like to install it now?'))){
+      rtools_install()
+      info <- rtools_find_gcc(Sys.getenv('R_COMPILED_BY'))
+    } else {
+      stop("Rtools not found. Please run: rtools_install()")
+    }
+  }
+  rtools_make <- Sys.which(file.path(info$PATH, 'make'))
+  if(unname(Sys.which('make')) == normalizePath(rtools_make)){
+    message(sprintf("Correct make already on the path: %s", rtools_make))
+  } else {
+    message(sprintf("Adding %s to the PATH", info$PATH))
+    Sys.setenv(PATH = paste0(info$PATH, ';', Sys.getenv('PATH')))
+  }
+  ccinfo <- cc_info()
+  if(!isTRUE(ccinfo$available)){
+    Sys.setenv(BINPREF = info$BINPREF)
+    ccinfo <- cc_info()
+    if(isTRUE(ccinfo$available)){
+      message("Successfully set BINPREF variable")
+    } else {
+      Sys.unsetenv('BINPREF')
+    }
+  }
+  print_diagnostics()
+}
+
+
 #' @export
 #' @rdname rtools
 #' @param silent perform automatic unattended installation (answer YES
@@ -77,39 +117,6 @@ rtools_install <- function(silent = FALSE){
   # Wait but don't kill the installer when user interrupts
   pid <- sys::exec_background(installer, as.character(args))
   if(identical(sys::exec_status(pid), 0L)) message("Success!")
-}
-
-#' @export
-#' @rdname rtools
-rtools_setup <- function(){
-  assert_windows()
-  info <- rtools_find_gcc(Sys.getenv('R_COMPILED_BY'))
-  if(!isTRUE(info$available)){
-    if(interactive() && isTRUE(askYesNo('Rtools not found. Would you like to install it now?'))){
-      rtools_install()
-      info <- rtools_find_gcc(Sys.getenv('R_COMPILED_BY'))
-    } else {
-      stop("Rtools not found. Please run: rtools_install()")
-    }
-  }
-  rtools_make <- Sys.which(file.path(info$PATH, 'make'))
-  if(unname(Sys.which('make')) == normalizePath(rtools_make)){
-    message(sprintf("Correct make already on the path: %s", rtools_make))
-  } else {
-    message(sprintf("Adding %s to the PATH", info$PATH))
-    Sys.setenv(PATH = paste0(info$PATH, ';', Sys.getenv('PATH')))
-  }
-  ccinfo <- cc_info()
-  if(!isTRUE(ccinfo$available)){
-    Sys.setenv(BINPREF = info$BINPREF)
-    ccinfo <- cc_info()
-    if(isTRUE(ccinfo$available)){
-      message("Successfully set BINPREF variable")
-    } else {
-      Sys.unsetenv('BINPREF')
-    }
-  }
-  print_diagnostics()
 }
 
 
