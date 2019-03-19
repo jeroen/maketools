@@ -87,6 +87,7 @@ rtools_setup <- function(){
   if(!isTRUE(info$available)){
     if(interactive() && isTRUE(askYesNo('Rtools not found. Would you like to install it now?'))){
       rtools_install()
+      info <- rtools_find_gcc(Sys.getenv('R_COMPILED_BY'))
     } else {
       stop("Rtools not found. Please run: rtools_install()")
     }
