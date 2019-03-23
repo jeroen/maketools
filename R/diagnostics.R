@@ -12,6 +12,9 @@ print_diagnostics <- function(){
   minfo <- make_info()
   if(minfo$available == FALSE){
     packageStartupMessage('No "make" on the PATH. R will not be able to compile code')
+    if(is_windows()){
+      packageStartupMessage("Please run makeconf::rtools_setup() to fix this")
+    }
     return()
   }
   mversion <- ifelse(is_string(minfo$version), minfo$version, "make")
