@@ -31,7 +31,7 @@ dpkg_sysdeps <- function(pkg, lib.loc = NULL){
     fullpkg <- strsplit(info, ":? ")[[1]][1]
     sys::as_text(sys::exec_internal('dpkg-query', c("--show", fullpkg))$stdout)
   }, character(1), USE.NAMES = FALSE)
-  vapply(out, function(str){
+  vapply(unique(out), function(str){
     name <- head(strsplit(str, "[\t:]")[[1]], 1)
     version <- tail(strsplit(str, "\t", fixed = TRUE)[[1]], 1)
     sprintf("%s (%s)", name, version)
