@@ -27,13 +27,22 @@ dpkg_sysdeps <- function(pkg, lib.loc = NULL){
     strsplit(line, ' ', fixed = TRUE)[[1]][3]
   })
   out <- vapply(unlist(paths), function(path){
-    info <- sys::as_text(sys::exec_internal('dpkg', c('-S', path))$stdout)
+    info <- sys_with_stderr('dpkg', c('-S', path))
     fullpkg <- strsplit(info, ":? ")[[1]][1]
-    sys::as_text(sys::exec_internal('dpkg-query', c("--show", fullpkg))$stdout)
+    sys_with_stderr('dpkg-query', c("--show", fullpkg))
   }, character(1), USE.NAMES = FALSE)
   vapply(unique(out), function(str){
     name <- head(strsplit(str, "[\t:]")[[1]], 1)
     version <- tail(strsplit(str, "\t", fixed = TRUE)[[1]], 1)
     sprintf("%s (%s)", name, version)
   }, character(1), USE.NAMES = FALSE)
+}
+
+sys_with_stderr <- function(cmd, args = NULL){
+  out <- sys::exec_internal(cmd = cmd, args = args, error = FALSE)
+  if(!identical(out$status, 0L)){
+    stop(out$stderr)
+  } else {
+    sys::as_text(out$stdout)
+  }
 }
