@@ -18,13 +18,13 @@ Compile C / C++ / Fortran source files using the compiler configured
 by R Makeconf.
 }
 \details{
-This program literally calls \code{make yourfile.o -f /path/to/R/Makeconf}.
+This program literally calls \verb{make yourfile.o -f /path/to/R/Makeconf}.
 This is exacltly what R does when building packages and hence the best
 way to test if your compiler is working.
 }
 \examples{
 # Test the CXX compiler
-testprog <- '#include <iostream>\\nint main() {std::cout << "Hello World!";}'
+testprog <- '#include <iostream>\nint main() {std::cout << "Hello World!";}'
 writeLines(testprog, con = 'testprog.cc')
 make('testprog')
 system('./testprog')

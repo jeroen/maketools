@@ -50,6 +50,7 @@ rtools_info <- function(){
 
 #' @export
 #' @rdname rtools
+#' @importFrom utils head tail askYesNo
 rtools_setup <- function(){
   assert_windows()
   info <- rtools_find_gcc(Sys.getenv('R_COMPILED_BY'))

@@ -60,16 +60,7 @@ dpkg_find_anywhere <- function(path){
 }
 
 dpkg_find <- function(path){
-  info <- sys_with_stderr('dpkg', c('-S', path))
+  info <- sys::exec_internal('dpkg', c('-S', path))
   fullpkg <- strsplit(info, ":? ")[[1]][1]
-  sys_with_stderr('dpkg-query', c("--show", fullpkg))
-}
-
-sys_with_stderr <- function(cmd, args = NULL){
-  out <- sys::exec_internal(cmd = cmd, args = args, error = FALSE)
-  if(!identical(out$status, 0L)){
-    stop(sys::as_text(out$stderr), call. = FALSE)
-  } else {
-    sys::as_text(out$stdout)
-  }
+  sys::exec_internal('dpkg-query', c("--show", fullpkg))
 }
