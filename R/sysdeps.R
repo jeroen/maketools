@@ -49,13 +49,14 @@ dpkg_get_version <- function(str){
 dpkg_find <- function(path){
   info <- sys_with_stderr('dpkg', c('-S', path))
   fullpkg <- strsplit(info, ":? ")[[1]][1]
-  sys_with_stderr('dpkg-query', c("--show", fullpkg))
+  sys_with_warning('dpkg-query', c("--show", fullpkg))
 }
 
-sys_with_stderr <- function(cmd, args = NULL){
+sys_with_warning <- function(cmd, args = NULL){
   out <- sys::exec_internal(cmd = cmd, args = args, error = FALSE)
   if(!identical(out$status, 0L)){
-    stop(sys::as_text(out$stderr), call. = FALSE)
+    warning(sys::as_text(out$stderr), call. = FALSE, immediate. = TRUE)
+    return(NA_character_)
   } else {
     sys::as_text(out$stdout)
   }
