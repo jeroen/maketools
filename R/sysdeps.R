@@ -34,7 +34,7 @@ dpkg_sysdeps <- function(pkg, lib.loc = NULL){
     file = basename(paths),
     run = vapply(pkg_run, dpkg_get_name, character(1), USE.NAMES = FALSE),
     dev = vapply(pkg_dev, dpkg_get_name, character(1), USE.NAMES = FALSE),
-    version = vapply(pkg_dev, dpkg_get_version, character(1), USE.NAMES = FALSE),
+    version = vapply(pkg_run, dpkg_get_version, character(1), USE.NAMES = FALSE),
     stringsAsFactors = FALSE
   )
 }
@@ -47,6 +47,7 @@ dpkg_get_version <- function(str){
   tail(strsplit(str, "\t", fixed = TRUE)[[1]], 1)
 }
 
+# In Debian /usr/lib and /lib are both used sometimes, we need to check both
 dpkg_find_anywhere <- function(path){
   tryCatch(dpkg_find(path), error = function(e){
     path <- sub("^/usr/usr", "", paste0('/usr', path))
