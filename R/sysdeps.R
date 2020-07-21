@@ -34,7 +34,7 @@ dpkg_sysdeps <- function(pkg, lib.loc = NULL){
     file = basename(paths),
     run = vapply(pkg_run, dpkg_get_name, character(1), USE.NAMES = FALSE),
     dev = vapply(pkg_dev, dpkg_get_name, character(1), USE.NAMES = FALSE),
-    version = vapply(pkg_run, dpkg_get_version, character(1), USE.NAMES = FALSE),
+    version = vapply(pkg_dev, dpkg_get_version, character(1), USE.NAMES = FALSE),
     stringsAsFactors = FALSE
   )
 }
