@@ -24,7 +24,7 @@ dpkg_sysdeps <- function(pkg, lib.loc = NULL){
     if(isTRUE(name %in% c("libR", "libm", "libgcc_s", "libc")))
       return(NULL) # R itself already depends on these
     line <- grep(x, lddinfo, fixed = TRUE, value = TRUE)
-    strsplit(line, ' ', fixed = TRUE)[[1]][3]
+    strsplit(basename(line), ' ', fixed = TRUE)[[1]][1]
   })
   paths <- unlist(paths)
   pkg_run <- vapply(paths, dpkg_find_anywhere, character(1), USE.NAMES = FALSE)
