@@ -26,16 +26,30 @@ dpkg_sysdeps <- function(pkg, lib.loc = NULL){
     line <- grep(x, lddinfo, fixed = TRUE, value = TRUE)
     strsplit(line, ' ', fixed = TRUE)[[1]][3]
   })
-  out <- vapply(unlist(paths), function(path){
-    info <- sys_with_stderr('dpkg', c('-S', path))
-    fullpkg <- strsplit(info, ":? ")[[1]][1]
-    sys_with_stderr('dpkg-query', c("--show", fullpkg))
-  }, character(1), USE.NAMES = FALSE)
-  vapply(unique(out), function(str){
-    name <- head(strsplit(str, "[\t:]")[[1]], 1)
-    version <- tail(strsplit(str, "\t", fixed = TRUE)[[1]], 1)
-    sprintf("%s (%s)", name, version)
-  }, character(1), USE.NAMES = FALSE)
+  paths <- unlist(paths)
+  pkg_run <- vapply(paths, dpkg_find, character(1), USE.NAMES = FALSE)
+  paths <- sub(".so[.0-9]+$", ".so", paths)
+  pkg_dev <- vapply(paths, dpkg_find, character(1), USE.NAMES = FALSE)
+  data.frame(
+    run = vapply(pkg_run, dpkg_get_name, character(1), USE.NAMES = FALSE),
+    dev = vapply(pkg_dev, dpkg_get_name, character(1), USE.NAMES = FALSE),
+    version = vapply(pkg_run, dpkg_get_version, character(1), USE.NAMES = FALSE),
+    stringsAsFactors = FALSE
+  )
+}
+
+dpkg_get_name <- function(str){
+  head(strsplit(str, "[\t:]")[[1]], 1)
+}
+
+dpkg_get_version <- function(str){
+  tail(strsplit(str, "\t", fixed = TRUE)[[1]], 1)
+}
+
+dpkg_find <- function(path){
+  info <- sys_with_stderr('dpkg', c('-S', path))
+  fullpkg <- strsplit(info, ":? ")[[1]][1]
+  sys_with_stderr('dpkg-query', c("--show", fullpkg))
 }
 
 sys_with_stderr <- function(cmd, args = NULL){
