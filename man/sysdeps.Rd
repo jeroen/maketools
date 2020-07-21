@@ -3,7 +3,7 @@
 \name{sysdeps}
 \alias{sysdeps}
 \alias{dpkg_sysdeps}
-\title{Find System Dependencies}
+\title{Show System Dependencies}
 \usage{
 dpkg_sysdeps(pkg, lib.loc = NULL)
 }
@@ -13,6 +13,7 @@ dpkg_sysdeps(pkg, lib.loc = NULL)
 \item{lib.loc}{path to the library of the package}
 }
 \description{
-Check which external libraries that an installed package links to.
-Currently only works on debian/ubuntu.
+Finds the shared libraries that an installed package links to by running \code{ldd}
+on the package \code{so} file. Then uses \code{dpkg} find the debian packages that contain
+the libs and the headers for this library.
 }

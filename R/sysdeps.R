@@ -1,7 +1,8 @@
-#' Find System Dependencies
+#' Show System Dependencies
 #'
-#' Check which external libraries that an installed package links to.
-#' Currently only works on debian/ubuntu.
+#' Finds the shared libraries that an installed package links to by running `ldd`
+#' on the package `so` file. Then uses `dpkg` find the debian packages that contain
+#' the libs and the headers for this library.
 #'
 #' @export
 #' @rdname sysdeps
@@ -33,8 +34,8 @@ dpkg_sysdeps <- function(pkg, lib.loc = NULL){
   pkg_dev <- vapply(libs, dpkg_find_anywhere, character(1), USE.NAMES = FALSE)
   data.frame(
     file = basename(paths),
-    pkg = vapply(pkg_run, dpkg_get_name, character(1), USE.NAMES = FALSE),
-    dev = vapply(pkg_dev, dpkg_get_name, character(1), USE.NAMES = FALSE),
+    package = vapply(pkg_run, dpkg_get_name, character(1), USE.NAMES = FALSE),
+    headers = vapply(pkg_dev, dpkg_get_name, character(1), USE.NAMES = FALSE),
     version = vapply(pkg_run, dpkg_get_version, character(1), USE.NAMES = FALSE),
     stringsAsFactors = FALSE
   )
