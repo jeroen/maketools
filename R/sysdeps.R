@@ -27,9 +27,9 @@ dpkg_sysdeps <- function(pkg, lib.loc = NULL){
     strsplit(line, ' ', fixed = TRUE)[[1]][3]
   })
   paths <- unlist(paths)
-  pkg_run <- vapply(paths, dpkg_find, character(1), USE.NAMES = FALSE)
+  pkg_run <- vapply(paths, dpkg_find_anywhere, character(1), USE.NAMES = FALSE)
   libs <- sub(".so[.0-9]+$", ".so", paths)
-  pkg_dev <- vapply(libs, dpkg_find, character(1), USE.NAMES = FALSE)
+  pkg_dev <- vapply(libs, dpkg_find_anywhere, character(1), USE.NAMES = FALSE)
   data.frame(
     file = basename(paths),
     run = vapply(pkg_run, dpkg_get_name, character(1), USE.NAMES = FALSE),
@@ -47,15 +47,19 @@ dpkg_get_version <- function(str){
   tail(strsplit(str, "\t", fixed = TRUE)[[1]], 1)
 }
 
-dpkg_find <- function(path){
-  tryCatch({
-    info <- sys_with_stderr('dpkg', c('-S', path))
-    fullpkg <- strsplit(info, ":? ")[[1]][1]
-    sys_with_stderr('dpkg-query', c("--show", fullpkg))
-  }, error = function(e){
-    warning(e)
-    return(NA_character_)
+dpkg_find_anywhere <- function(path){
+  tryCatch(dpkg_find(path), error = function(e){
+    tryCatch(dpkg_find(sub("^/usr/lib", "/lib", path)), function(e){
+      message(e)
+      NA_character_
+    })
   })
+}
+
+dpkg_find <- function(path){
+  info <- sys_with_stderr('dpkg', c('-S', path))
+  fullpkg <- strsplit(info, ":? ")[[1]][1]
+  sys_with_stderr('dpkg-query', c("--show", fullpkg))
 }
 
 sys_with_stderr <- function(cmd, args = NULL){
