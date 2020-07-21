@@ -49,8 +49,9 @@ dpkg_get_version <- function(str){
 
 dpkg_find_anywhere <- function(path){
   tryCatch(dpkg_find(path), error = function(e){
-    tryCatch(dpkg_find(sub("^/usr/lib", "/lib", path)), error = function(e){
-      message(e)
+    path <- sub("^/usr/usr", "", paste0('/usr', path))
+    tryCatch(dpkg_find(path), error = function(e){
+      #message(e)
       NA_character_
     })
   })
