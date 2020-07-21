@@ -28,9 +28,10 @@ dpkg_sysdeps <- function(pkg, lib.loc = NULL){
   })
   paths <- unlist(paths)
   pkg_run <- vapply(paths, dpkg_find, character(1), USE.NAMES = FALSE)
-  paths <- sub(".so[.0-9]+$", ".so", paths)
-  pkg_dev <- vapply(paths, dpkg_find, character(1), USE.NAMES = FALSE)
+  libs <- sub(".so[.0-9]+$", ".so", paths)
+  pkg_dev <- vapply(libs, dpkg_find, character(1), USE.NAMES = FALSE)
   data.frame(
+    file = basename(paths),
     run = vapply(pkg_run, dpkg_get_name, character(1), USE.NAMES = FALSE),
     dev = vapply(pkg_dev, dpkg_get_name, character(1), USE.NAMES = FALSE),
     version = vapply(pkg_run, dpkg_get_version, character(1), USE.NAMES = FALSE),
@@ -47,19 +48,14 @@ dpkg_get_version <- function(str){
 }
 
 dpkg_find <- function(path){
-  info <- sys_with_warning('dpkg', c('-S', path))
-  fullpkg <- strsplit(info, ":? ")[[1]][1]
-  sys_with_stderr('dpkg-query', c("--show", fullpkg))
-}
-
-sys_with_warning <- function(cmd, args = NULL){
-  out <- sys::exec_internal(cmd = cmd, args = args, error = FALSE)
-  if(!identical(out$status, 0L)){
-    warning(sys::as_text(out$stderr), call. = FALSE, immediate. = TRUE)
+  tryCatch({
+    info <- sys_with_stderr('dpkg', c('-S', path))
+    fullpkg <- strsplit(info, ":? ")[[1]][1]
+    sys_with_stderr('dpkg-query', c("--show", fullpkg))
+  }, error = function(e){
+    warning(e)
     return(NA_character_)
-  } else {
-    sys::as_text(out$stdout)
-  }
+  })
 }
 
 sys_with_stderr <- function(cmd, args = NULL){
