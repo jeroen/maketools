@@ -60,7 +60,7 @@ dpkg_find_anywhere <- function(path){
 }
 
 dpkg_find <- function(path){
-  info <- sys::exec_internal('dpkg', c('-S', path))
+  info <- sys::as_text(sys::exec_internal('dpkg', c('-S', path))$stdout)
   fullpkg <- strsplit(info, ":? ")[[1]][1]
-  sys::exec_internal('dpkg-query', c("--show", fullpkg))
+  sys::as_text(sys::exec_internal('dpkg-query', c("--show", fullpkg))$stdout)
 }
