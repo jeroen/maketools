@@ -41,7 +41,7 @@ dpkg_sysdeps <- function(pkg, lib.loc = NULL){
 sys_with_stderr <- function(cmd, args = NULL){
   out <- sys::exec_internal(cmd = cmd, args = args, error = FALSE)
   if(!identical(out$status, 0L)){
-    stop(out$stderr)
+    stop(sys::as_text(out$stderr))
   } else {
     sys::as_text(out$stdout)
   }
