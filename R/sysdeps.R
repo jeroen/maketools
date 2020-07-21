@@ -16,17 +16,18 @@ dpkg_sysdeps <- function(pkg, lib.loc = NULL){
   if(!file.exists(dll)) # No compiled code
     return(NULL)
   lddinfo <- sys::as_text(sys::exec_internal('ldd', dll)$stdout)
+  lddinfo <- sub(" \\([a-f0-9x]+\\)$", "", lddinfo)
   text <- sys::as_text(sys::exec_internal('readelf', c('-d', dll))$stdout)
   text <- grep('^.*NEEDED.*\\[(.*)\\]$', text, value = TRUE)
   shlibs <- sub('^.*NEEDED.*\\[(.*)\\]$', '\\1', text)
   paths <- lapply(shlibs, function(x){
     name <- strsplit(x, '.', fixed = TRUE)[[1]][1]
-    if(isTRUE(name %in% c("libR", "libm", "libgcc_s", "libc")))
+    if(isTRUE(name %in% c("libR", "libm", "libgcc_s", "libc", "ld-linux-x86-64")))
       return(NULL) # R itself already depends on these
     line <- grep(x, lddinfo, fixed = TRUE, value = TRUE)
-    strsplit(basename(line), ' ', fixed = TRUE)[[1]][1]
+    utils::tail(strsplit(line, ' ', fixed = TRUE)[[1]], 1)
   })
-  paths <- unlist(paths)
+  paths <- trimws(unlist(paths))
   pkg_run <- vapply(paths, dpkg_find_anywhere, character(1), USE.NAMES = FALSE)
   libs <- sub(".so[.0-9]+$", ".so", paths)
   pkg_dev <- vapply(libs, dpkg_find_anywhere, character(1), USE.NAMES = FALSE)
