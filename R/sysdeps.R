@@ -94,7 +94,7 @@ dpkg_find_anywhere <- function(path){
 dpkg_find <- function(path){
   info <- sys_call('dpkg', c('-S', path))
   fullpkg <- strsplit(info, ":? ")[[1]][1]
-  sys_call('dpkg-query', c('-f', '${Package}\t${Version}\t${Source}\n',"--show", fullpkg))
+  sys_call('dpkg-query', c('-f', '${Package}\t${Version}\t${source:Package}\n',"--show", fullpkg))
 }
 
 get_disto <- function(){
