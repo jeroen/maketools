@@ -4,7 +4,7 @@
 \alias{sysdeps}
 \alias{package_sysdeps}
 \alias{package_sysdeps_string}
-\title{Show System Dependencies}
+\title{Package System Dependencies}
 \usage{
 package_sysdeps(pkg, lib.loc = NULL)
 
@@ -16,7 +16,18 @@ package_sysdeps_string(pkg, lib.loc = NULL)
 \item{lib.loc}{path to the library of the package}
 }
 \description{
-Finds the shared libraries that an installed package links to by running \code{ldd}
-on the package \code{so} file. Then uses system package manager (i.e. \code{dpkg} or \code{rpm})
-to find the rpm/deb packages that contain the libs and the headers for this library.
+Finds the shared libraries that an installed R package links to by running
+\code{ldd} on the package \code{so} file. Then uses system package manager (i.e. \code{dpkg}
+or \code{rpm}) to locate the rpm/deb package that contains the shared libraries,
+headers, and sources for this library.
+}
+\details{
+For common Linux distributions, the output also includes a URL to the homepage
+of this package within the given Linux distribution. Here we can typically find
+more information about the library, such as configuration options, dependencies,
+and patches applied by the distribution.
+
+Because we use \code{ldd}, this only shows hard run-time dependencies of an installed
+R package. It does not show dependencies that are resolved at build-time, such as
+static or header-only libraries.
 }

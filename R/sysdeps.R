@@ -1,8 +1,18 @@
-#' Show System Dependencies
+#' Package System Dependencies
 #'
-#' Finds the shared libraries that an installed package links to by running `ldd`
-#' on the package `so` file. Then uses system package manager (i.e. `dpkg` or `rpm`)
-#' to find the rpm/deb packages that contain the libs and the headers for this library.
+#' Finds the shared libraries that an installed R package links to by running
+#' `ldd` on the package `so` file. Then uses system package manager (i.e. `dpkg`
+#' or `rpm`) to locate the rpm/deb package that contains the shared libraries,
+#' headers, and sources for this library.
+#'
+#' For common Linux distributions, the output also includes a URL to the homepage
+#' of this package within the given Linux distribution. Here we can typically find
+#' more information about the library, such as configuration options, dependencies,
+#' and patches applied by the distribution.
+#'
+#' Because we use `ldd`, this only shows hard run-time dependencies of an installed
+#' R package. It does not show dependencies that are resolved at build-time, such as
+#' static or header-only libraries.
 #'
 #' @export
 #' @rdname sysdeps
