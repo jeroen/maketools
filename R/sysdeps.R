@@ -38,7 +38,7 @@ package_sysdeps <- function(pkg, lib.loc = NULL){
     package = package,
     headers = headerpkg,
     version = version,
-    url = get_package_urls(package),
+    url = get_package_urls(package, headerpkg),
     stringsAsFactors = FALSE
   )
 }
@@ -112,14 +112,15 @@ has <- function(x){
   nchar(Sys.which(x)) > 0
 }
 
-get_package_urls <- function(pkgs){
+get_package_urls <- function(pkgs, headerpkgs){
   os <- utils::sessionInfo()$running
   if(grepl("ubuntu", os, ignore.case = TRUE)){
     sprintf('https://packages.ubuntu.com/%s/%s', get_disto(), pkgs)
   } else if(grepl("debian", os, ignore.case = TRUE)){
     sprintf('https://packages.debian.org/%s/%s', get_disto(), pkgs)
   } else if(grepl("fedora", os, ignore.case = TRUE)) {
-    sprintf('https://src.fedoraproject.org/rpms/%s', pkgs)
+    rawpkg <- sub("^lib", "", sub('-devel$', '', headerpkgs))
+    ifelse(is.na(headerpkgs), NA_character_, sprintf('https://src.fedoraproject.org/rpms/%s', rawpkg))
   } else {
     NA_character_
   }
