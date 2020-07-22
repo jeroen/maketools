@@ -30,14 +30,12 @@ package_sysdeps <- function(pkg, lib.loc = NULL){
   })
   paths <- trimws(unlist(paths))
   pkgs <- find_packages(paths)
-  package <- get_names(pkgs)
-  version <- get_versions(pkgs)
-  headerpkg <- get_names(find_packages(sub(".so[.0-9]+$", ".so", paths)))
   data.frame(
     shlib = basename(paths),
-    package = package,
-    headers = headerpkg,
-    version = version,
+    package = get_names(pkgs),
+    headers = get_names(find_packages(sub(".so[.0-9]+$", ".so", paths))),
+    source = get_source(pkgs),
+    version = get_versions(pkgs),
     url = get_package_urls(pkgs),
     stringsAsFactors = FALSE
   )
@@ -62,7 +60,7 @@ get_versions <- function(str){
   }, character(1), USE.NAMES = FALSE)
 }
 
-get_src_rpm <- function(str){
+get_source <- function(str){
   vapply(strsplit(str, "\t", fixed = TRUE), function(x){
     strsplit(x[3], '-\\d')[[1]][1]
   }, character(1), USE.NAMES = FALSE)
@@ -96,7 +94,7 @@ dpkg_find_anywhere <- function(path){
 dpkg_find <- function(path){
   info <- sys_call('dpkg', c('-S', path))
   fullpkg <- strsplit(info, ":? ")[[1]][1]
-  sys_call('dpkg-query', c('-f', '${Package}\t${Version}\t${Package}\t${Source}\n',"--show", fullpkg))
+  sys_call('dpkg-query', c('-f', '${Package}\t${Version}\t${Source}\n',"--show", fullpkg))
 }
 
 get_disto <- function(){
@@ -129,7 +127,7 @@ get_package_urls <- function(pkgs){
   } else if(grepl("debian", os, ignore.case = TRUE)){
     sprintf('https://packages.debian.org/%s/%s', get_disto(), get_names(pkgs))
   } else if(grepl("fedora", os, ignore.case = TRUE)) {
-    sprintf('https://src.fedoraproject.org/rpms/%s', get_src_rpm(pkgs))
+    sprintf('https://src.fedoraproject.org/rpms/%s', get_source(pkgs))
   } else {
     rep(NA_character_, length(pkgs))
   }
