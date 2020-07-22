@@ -3,9 +3,12 @@
 \name{sysdeps}
 \alias{sysdeps}
 \alias{dpkg_sysdeps}
+\alias{dpkg_sysdeps_string}
 \title{Show System Dependencies}
 \usage{
 dpkg_sysdeps(pkg, lib.loc = NULL)
+
+dpkg_sysdeps_string(pkg, lib.loc = NULL)
 }
 \arguments{
 \item{pkg}{name of an installed packages}

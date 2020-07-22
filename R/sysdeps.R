@@ -41,6 +41,13 @@ dpkg_sysdeps <- function(pkg, lib.loc = NULL){
   )
 }
 
+#' @export
+#' @rdname sysdeps
+dpkg_sysdeps_string <- function(pkg, lib.loc = NULL){
+  df <- dpkg_sysdeps(pkg = pkg, lib.loc = lib.loc)
+  paste0(sprintf("%s (%s)", df$package, df$version), collapse = ", ")
+}
+
 dpkg_get_name <- function(str){
   head(strsplit(str, "[\t:]")[[1]], 1)
 }
