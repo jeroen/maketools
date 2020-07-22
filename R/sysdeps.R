@@ -38,7 +38,7 @@ package_sysdeps <- function(pkg, lib.loc = NULL){
     package = package,
     headers = headerpkg,
     version = version,
-    url = get_package_urls(package, headerpkg),
+    url = get_package_urls(pkgs),
     stringsAsFactors = FALSE
   )
 }
@@ -51,11 +51,21 @@ package_sysdeps_string <- function(pkg, lib.loc = NULL){
 }
 
 get_names <- function(str){
-  vapply(strsplit(str, "\t", fixed = TRUE), FUN = head, character(1), n = 1, USE.NAMES = FALSE)
+  vapply(strsplit(str, "\t", fixed = TRUE), function(x){
+    x[1]
+  }, character(1), USE.NAMES = FALSE)
 }
 
 get_versions <- function(str){
-  vapply(strsplit(str, "\t", fixed = TRUE), FUN = tail, character(1), n = 1, USE.NAMES = FALSE)
+  vapply(strsplit(str, "\t", fixed = TRUE), function(x){
+    x[2]
+  }, character(1), USE.NAMES = FALSE)
+}
+
+get_src_rpm <- function(str){
+  vapply(strsplit(str, "\t", fixed = TRUE), function(x){
+    strsplit(x[3], '-\\d')[[1]][1]
+  }, character(1), USE.NAMES = FALSE)
 }
 
 find_packages <- function(paths){
@@ -67,7 +77,7 @@ find_packages <- function(paths){
 }
 
 rpm_find <- function(path){
-  tryCatch(sys_call('rpm', c('-qf', path, '--qf', "%{NAME}\t%{VERSION}\n")), error = function(e){
+  tryCatch(sys_call('rpm', c('-qf', path, '--qf', "%{NAME}\t%{VERSION}\t%{SOURCERPM}\n")), error = function(e){
     NA_character_
   })
 }
@@ -86,7 +96,7 @@ dpkg_find_anywhere <- function(path){
 dpkg_find <- function(path){
   info <- sys_call('dpkg', c('-S', path))
   fullpkg <- strsplit(info, ":? ")[[1]][1]
-  sys_call('dpkg-query', c('-f', '${Package}\t${Version}\n',"--show", fullpkg))
+  sys_call('dpkg-query', c('-f', '${Package}\t${Version}\t${Package}\n',"--show", fullpkg))
 }
 
 get_disto <- function(){
@@ -112,16 +122,17 @@ has <- function(x){
   nchar(Sys.which(x)) > 0
 }
 
-get_package_urls <- function(pkgs, headerpkgs){
+get_package_urls <- function(pkgs){
   os <- utils::sessionInfo()$running
-  if(grepl("ubuntu", os, ignore.case = TRUE)){
-    sprintf('https://packages.ubuntu.com/%s/%s', get_disto(), pkgs)
+  out <- if(grepl("ubuntu", os, ignore.case = TRUE)){
+    sprintf('https://packages.ubuntu.com/%s/%s', get_disto(), get_names(pkgs))
   } else if(grepl("debian", os, ignore.case = TRUE)){
-    sprintf('https://packages.debian.org/%s/%s', get_disto(), pkgs)
+    sprintf('https://packages.debian.org/%s/%s', get_disto(), get_names(pkgs))
   } else if(grepl("fedora", os, ignore.case = TRUE)) {
-    rawpkg <- sub("^lib", "", sub('-devel$', '', headerpkgs))
-    ifelse(is.na(headerpkgs), NA_character_, sprintf('https://src.fedoraproject.org/rpms/%s', rawpkg))
+    sprintf('https://src.fedoraproject.org/rpms/%s', get_src_rpm(pkgs))
   } else {
-    NA_character_
+    rep(NA_character_, length(pkgs))
   }
+  out[is.na(pkgs)] <- NA_character_
+  return(out)
 }
