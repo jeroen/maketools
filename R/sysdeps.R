@@ -1,15 +1,15 @@
 #' Show System Dependencies
 #'
 #' Finds the shared libraries that an installed package links to by running `ldd`
-#' on the package `so` file. Then uses `dpkg` find the debian packages that contain
-#' the libs and the headers for this library.
+#' on the package `so` file. Then uses system package manager (i.e. `dpkg` or `rpm`)
+#' to find the rpm/deb packages that contain the libs and the headers for this library.
 #'
 #' @export
 #' @rdname sysdeps
 #' @name sysdeps
 #' @param pkg name of an installed packages
 #' @param lib.loc path to the library of the package
-dpkg_sysdeps <- function(pkg, lib.loc = NULL){
+package_sysdeps <- function(pkg, lib.loc = NULL){
   pkgpath <- system.file(package = pkg, lib.loc = lib.loc)
   if(!nchar(pkgpath))
     stop("Package not found")
@@ -29,15 +29,15 @@ dpkg_sysdeps <- function(pkg, lib.loc = NULL){
     utils::tail(strsplit(line, ' ', fixed = TRUE)[[1]], 1)
   })
   paths <- trimws(unlist(paths))
-  pkg_run <- find_packages(paths)
-  package <- vapply(pkg_run, dpkg_get_name, character(1), USE.NAMES = FALSE)
-  libs <- sub(".so[.0-9]+$", ".so", paths)
-  pkg_dev <- find_packages(libs)
+  pkgs <- find_packages(paths)
+  package <- get_names(pkgs)
+  version <- get_versions(pkgs)
+  headerpkg <- get_names(find_packages(sub(".so[.0-9]+$", ".so", paths)))
   data.frame(
-    file = basename(paths),
+    shlib = basename(paths),
     package = package,
-    headers = vapply(pkg_dev, dpkg_get_name, character(1), USE.NAMES = FALSE),
-    version = vapply(pkg_run, dpkg_get_version, character(1), USE.NAMES = FALSE),
+    headers = headerpkg,
+    version = version,
     url = get_package_urls(package),
     stringsAsFactors = FALSE
   )
@@ -45,17 +45,17 @@ dpkg_sysdeps <- function(pkg, lib.loc = NULL){
 
 #' @export
 #' @rdname sysdeps
-dpkg_sysdeps_string <- function(pkg, lib.loc = NULL){
-  df <- dpkg_sysdeps(pkg = pkg, lib.loc = lib.loc)
+package_sysdeps_string <- function(pkg, lib.loc = NULL){
+  df <- package_sysdeps(pkg = pkg, lib.loc = lib.loc)
   paste0(sprintf("%s (%s)", df$package, df$version), collapse = ", ")
 }
 
-dpkg_get_name <- function(str){
-  head(strsplit(str, "[\t:]")[[1]], 1)
+get_names <- function(str){
+  vapply(strsplit(str, "\t", fixed = TRUE), FUN = head, character(1), n = 1, USE.NAMES = FALSE)
 }
 
-dpkg_get_version <- function(str){
-  tail(strsplit(str, "\t", fixed = TRUE)[[1]], 1)
+get_versions <- function(str){
+  vapply(strsplit(str, "\t", fixed = TRUE), FUN = tail, character(1), n = 1, USE.NAMES = FALSE)
 }
 
 find_packages <- function(paths){
@@ -86,7 +86,7 @@ dpkg_find_anywhere <- function(path){
 dpkg_find <- function(path){
   info <- sys_call('dpkg', c('-S', path))
   fullpkg <- strsplit(info, ":? ")[[1]][1]
-  sys_call('dpkg-query', c("--show", fullpkg))
+  sys_call('dpkg-query', c('-f', '${Package}\t${Version}\n',"--show", fullpkg))
 }
 
 get_disto <- function(){

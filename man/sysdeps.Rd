@@ -2,13 +2,13 @@
 % Please edit documentation in R/sysdeps.R
 \name{sysdeps}
 \alias{sysdeps}
-\alias{dpkg_sysdeps}
-\alias{dpkg_sysdeps_string}
+\alias{package_sysdeps}
+\alias{package_sysdeps_string}
 \title{Show System Dependencies}
 \usage{
-dpkg_sysdeps(pkg, lib.loc = NULL)
+package_sysdeps(pkg, lib.loc = NULL)
 
-dpkg_sysdeps_string(pkg, lib.loc = NULL)
+package_sysdeps_string(pkg, lib.loc = NULL)
 }
 \arguments{
 \item{pkg}{name of an installed packages}
@@ -17,6 +17,6 @@ dpkg_sysdeps_string(pkg, lib.loc = NULL)
 }
 \description{
 Finds the shared libraries that an installed package links to by running \code{ldd}
-on the package \code{so} file. Then uses \code{dpkg} find the debian packages that contain
-the libs and the headers for this library.
+on the package \code{so} file. Then uses system package manager (i.e. \code{dpkg} or \code{rpm})
+to find the rpm/deb packages that contain the libs and the headers for this library.
 }
