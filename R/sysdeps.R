@@ -30,13 +30,15 @@ dpkg_sysdeps <- function(pkg, lib.loc = NULL){
   })
   paths <- trimws(unlist(paths))
   pkg_run <- vapply(paths, dpkg_find_anywhere, character(1), USE.NAMES = FALSE)
+  package <- vapply(pkg_run, dpkg_get_name, character(1), USE.NAMES = FALSE)
   libs <- sub(".so[.0-9]+$", ".so", paths)
   pkg_dev <- vapply(libs, dpkg_find_anywhere, character(1), USE.NAMES = FALSE)
   data.frame(
     file = basename(paths),
-    package = vapply(pkg_run, dpkg_get_name, character(1), USE.NAMES = FALSE),
+    package = package,
     headers = vapply(pkg_dev, dpkg_get_name, character(1), USE.NAMES = FALSE),
     version = vapply(pkg_run, dpkg_get_version, character(1), USE.NAMES = FALSE),
+    url = get_package_urls(package),
     stringsAsFactors = FALSE
   )
 }
@@ -71,4 +73,20 @@ dpkg_find <- function(path){
   info <- sys::as_text(sys::exec_internal('dpkg', c('-S', path))$stdout)
   fullpkg <- strsplit(info, ":? ")[[1]][1]
   sys::as_text(sys::exec_internal('dpkg-query', c("--show", fullpkg))$stdout)
+}
+
+get_disto <- function(){
+  sys::as_text(sys::exec_internal("lsb_release", "-sc")$stdout)
+}
+
+get_package_urls <- function(pkgs){
+  os <- utils::sessionInfo()$running
+  distro <- get_disto()
+  if(grepl("ubuntu", os, ignore.case = TRUE)){
+    sprintf('https://packages.ubuntu.com/%s/%s', distro, pkgs)
+  } else if(grepl("debian", os, ignore.case = TRUE)){
+    sprintf('https://packages.debian.org/%s/%s', distro, pkgs)
+  } else {
+    stop("Unknown os:", os)
+  }
 }
