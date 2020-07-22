@@ -29,10 +29,10 @@ dpkg_sysdeps <- function(pkg, lib.loc = NULL){
     utils::tail(strsplit(line, ' ', fixed = TRUE)[[1]], 1)
   })
   paths <- trimws(unlist(paths))
-  pkg_run <- vapply(paths, dpkg_find_anywhere, character(1), USE.NAMES = FALSE)
+  pkg_run <- find_packages(paths)
   package <- vapply(pkg_run, dpkg_get_name, character(1), USE.NAMES = FALSE)
   libs <- sub(".so[.0-9]+$", ".so", paths)
-  pkg_dev <- vapply(libs, dpkg_find_anywhere, character(1), USE.NAMES = FALSE)
+  pkg_dev <- find_packages(libs)
   data.frame(
     file = basename(paths),
     package = package,
@@ -56,6 +56,20 @@ dpkg_get_name <- function(str){
 
 dpkg_get_version <- function(str){
   tail(strsplit(str, "\t", fixed = TRUE)[[1]], 1)
+}
+
+find_packages <- function(paths){
+  switch(pkg_format(),
+         dpkg = vapply(paths, dpkg_find_anywhere, character(1), USE.NAMES = FALSE),
+         rpm = vapply(paths, rpm_find, character(1), USE.NAMES = FALSE),
+         rep(NA, length(paths))
+  )
+}
+
+rpm_find <- function(path){
+  tryCatch(sys_call('rpm', c('-qf', path, '--qf', "%{NAME}\t%{VERSION}\n")), error = function(e){
+    NA_character_
+  })
 }
 
 # In Debian /usr/lib and /lib are both used sometimes, we need to check both
@@ -86,14 +100,27 @@ sys_call <- function(cmd, args = NULL){
   sys::as_text(sys::exec_internal(cmd = cmd, args = args)$stdout)
 }
 
+pkg_format <- function(){
+  if(has('dpkg') && has('apt'))
+    return("dpkg")
+  if(has('rpm')  && any(has(c('dnf', 'yum'))))
+    return('rpm')
+  NA_character_
+}
+
+has <- function(x){
+  nchar(Sys.which(x)) > 0
+}
+
 get_package_urls <- function(pkgs){
   os <- utils::sessionInfo()$running
-  distro <- get_disto()
   if(grepl("ubuntu", os, ignore.case = TRUE)){
-    sprintf('https://packages.ubuntu.com/%s/%s', distro, pkgs)
+    sprintf('https://packages.ubuntu.com/%s/%s', get_disto(), pkgs)
   } else if(grepl("debian", os, ignore.case = TRUE)){
-    sprintf('https://packages.debian.org/%s/%s', distro, pkgs)
+    sprintf('https://packages.debian.org/%s/%s', get_disto(), pkgs)
+  } else if(grepl("fedora", os, ignore.case = TRUE)) {
+    sprintf('https://src.fedoraproject.org/rpms/%s', pkgs)
   } else {
-    stop("Unknown os:", os)
+    NA_character_
   }
 }
