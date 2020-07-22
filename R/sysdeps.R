@@ -16,9 +16,9 @@ dpkg_sysdeps <- function(pkg, lib.loc = NULL){
   dll <- file.path(pkgpath, sprintf('libs/%s.so', pkg))
   if(!file.exists(dll)) # No compiled code
     return(NULL)
-  lddinfo <- sys::as_text(sys::exec_internal('ldd', dll)$stdout)
+  lddinfo <- sys_call('ldd', dll)
   lddinfo <- sub(" \\([a-f0-9x]+\\)$", "", lddinfo)
-  text <- sys::as_text(sys::exec_internal('readelf', c('-d', dll))$stdout)
+  text <- sys_call('readelf', c('-d', dll))
   text <- grep('^.*NEEDED.*\\[(.*)\\]$', text, value = TRUE)
   shlibs <- sub('^.*NEEDED.*\\[(.*)\\]$', '\\1', text)
   paths <- lapply(shlibs, function(x){
@@ -70,13 +70,17 @@ dpkg_find_anywhere <- function(path){
 }
 
 dpkg_find <- function(path){
-  info <- sys::as_text(sys::exec_internal('dpkg', c('-S', path))$stdout)
+  info <- sys_call('dpkg', c('-S', path))
   fullpkg <- strsplit(info, ":? ")[[1]][1]
-  sys::as_text(sys::exec_internal('dpkg-query', c("--show", fullpkg))$stdout)
+  sys_call('dpkg-query', c("--show", fullpkg))
 }
 
 get_disto <- function(){
-  sys::as_text(sys::exec_internal("lsb_release", "-sc")$stdout)
+  sys_call("lsb_release", "-sc")
+}
+
+sys_call <- function(cmd, args = NULL){
+  sys::as_text(sys::exec_internal(cmd = cmd, args = args)$stdout)
 }
 
 get_package_urls <- function(pkgs){
