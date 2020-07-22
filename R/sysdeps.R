@@ -76,7 +76,10 @@ dpkg_find <- function(path){
 }
 
 get_disto <- function(){
-  sys_call("lsb_release", "-sc")
+  tryCatch(sys_call("lsb_release", "-sc"), error = function(e){
+    # If lsb_release is unavailable
+    system("dpkg --status tzdata | grep Provides|cut -f2 -d'-'", intern = TRUE)
+  })
 }
 
 sys_call <- function(cmd, args = NULL){
