@@ -96,7 +96,7 @@ dpkg_find_anywhere <- function(path){
 dpkg_find <- function(path){
   info <- sys_call('dpkg', c('-S', path))
   fullpkg <- strsplit(info, ":? ")[[1]][1]
-  sys_call('dpkg-query', c('-f', '${Package}\t${Version}\t${Package}\n',"--show", fullpkg))
+  sys_call('dpkg-query', c('-f', '${Package}\t${Version}\t${Package}\t${Source}\n',"--show", fullpkg))
 }
 
 get_disto <- function(){
@@ -133,6 +133,5 @@ get_package_urls <- function(pkgs){
   } else {
     rep(NA_character_, length(pkgs))
   }
-  out[is.na(pkgs)] <- NA_character_
-  return(out)
+  ifelse(is.na(pkgs), NA_character_, out)
 }
