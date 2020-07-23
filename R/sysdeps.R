@@ -1,7 +1,7 @@
 #' Package System Dependencies
 #'
 #' Finds the shared libraries that an installed R package links to by running
-#' `ldd` on the package `so` file. Then uses system package manager (i.e. `dpkg`
+#' `ldd` on the package `so` file. Then uses system package manager (e.g. `dpkg`
 #' or `rpm`) to locate the rpm/deb package that contains the shared libraries,
 #' headers, and sources for this library.
 #'
@@ -187,17 +187,16 @@ get_pacman_repo <- function(pkg_names){
 
 get_package_urls <- function(pkgs){
   os <- utils::sessionInfo()$running
+  pkg_names <- get_names(pkgs)
   out <- if(grepl("ubuntu", os, ignore.case = TRUE)){
-    sprintf('https://packages.ubuntu.com/%s/%s', get_disto(), get_names(pkgs))
+    sprintf('https://packages.ubuntu.com/%s/%s', get_disto(), pkg_names)
   } else if(grepl("debian", os, ignore.case = TRUE)){
-    sprintf('https://packages.debian.org/%s/%s', get_disto(), get_names(pkgs))
+    sprintf('https://packages.debian.org/%s/%s', get_disto(), pkg_names)
   } else if(grepl("fedora", os, ignore.case = TRUE)) {
     sprintf('https://src.fedoraproject.org/rpms/%s', get_source(pkgs))
   } else if(grepl("alpine", os, ignore.case = TRUE)) {
-    pkg_names <- get_names(pkgs)
     sprintf('https://pkgs.alpinelinux.org/package/%s/x86_64/%s', get_apk_repo(pkg_names), pkg_names)
   } else if(grepl("arch", os, ignore.case = TRUE)) {
-    pkg_names <- get_names(pkgs)
     repos <- get_pacman_repo(pkg_names)
     sprintf("https://www.archlinux.org/packages/%s/x86_64/%s", repos, pkg_names)
   } else {

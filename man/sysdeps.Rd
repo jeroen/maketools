@@ -17,7 +17,7 @@ package_sysdeps_string(pkg, lib.loc = NULL)
 }
 \description{
 Finds the shared libraries that an installed R package links to by running
-\code{ldd} on the package \code{so} file. Then uses system package manager (i.e. \code{dpkg}
+\code{ldd} on the package \code{so} file. Then uses system package manager (e.g. \code{dpkg}
 or \code{rpm}) to locate the rpm/deb package that contains the shared libraries,
 headers, and sources for this library.
 }
