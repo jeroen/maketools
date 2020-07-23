@@ -26,7 +26,7 @@ package_sysdeps <- function(pkg, lib.loc = NULL){
   dll <- file.path(pkgpath, sprintf('libs/%s.so', pkg))
   if(!file.exists(dll)) # No compiled code
     return(NULL)
-  lddinfo <- sys_call('ldd', dll)
+  lddinfo <- sys_call('ldd', dll, error = FALSE)
   lddinfo <- sub(" \\([a-f0-9x]+\\)$", "", lddinfo)
   text <- sys_call('readelf', c('-d', dll))
   text <- grep('^.*NEEDED.*\\[(.*)\\]$', text, value = TRUE)
@@ -72,16 +72,33 @@ get_versions <- function(str){
 
 get_source <- function(str){
   vapply(strsplit(str, "\t", fixed = TRUE), function(x){
-    strsplit(x[3], '-\\d')[[1]][1]
+    pkg_parse_name(x[3])
   }, character(1), USE.NAMES = FALSE)
+}
+
+pkg_parse_name <- function(pkg){
+  strsplit(pkg, '-\\d')[[1]][1]
 }
 
 find_packages <- function(paths){
   switch(pkg_format(),
          dpkg = vapply(paths, dpkg_find_anywhere, character(1), USE.NAMES = FALSE),
          rpm = vapply(paths, rpm_find, character(1), USE.NAMES = FALSE),
-         rep(NA, length(paths))
+         apk = vapply(paths, apk_find, character(1), USE.NAMES = FALSE),
+         rep(NA_character_, length(paths))
   )
+}
+
+apk_find <- function(path){
+  tryCatch({
+    out <- sys_call('apk', c('info', '--who-owns', path))
+    pkg <- utils::tail(strsplit(out, ' ', fixed = TRUE)[[1]], 1)
+    name <- pkg_parse_name(pkg)
+    version <- sub(paste0(name, '-'), '', pkg, fixed = TRUE)
+    paste(name, version, sep = '\t')
+  }, error = function(e){
+    NA_character_
+  })
 }
 
 rpm_find <- function(path){
@@ -114,8 +131,8 @@ get_disto <- function(){
   })
 }
 
-sys_call <- function(cmd, args = NULL){
-  sys::as_text(sys::exec_internal(cmd = cmd, args = args)$stdout)
+sys_call <- function(cmd, args = NULL, error = TRUE){
+  sys::as_text(sys::exec_internal(cmd = cmd, args = args, error = error)$stdout)
 }
 
 pkg_format <- function(){
@@ -123,6 +140,8 @@ pkg_format <- function(){
     return("dpkg")
   if(has('rpm')  && any(has(c('dnf', 'yum'))))
     return('rpm')
+  if(has('apk'))
+    return('apk')
   NA_character_
 }
 
@@ -138,6 +157,8 @@ get_package_urls <- function(pkgs){
     sprintf('https://packages.debian.org/%s/%s', get_disto(), get_names(pkgs))
   } else if(grepl("fedora", os, ignore.case = TRUE)) {
     sprintf('https://src.fedoraproject.org/rpms/%s', get_source(pkgs))
+  } else if(grepl("alpine", os, ignore.case = TRUE)) {
+    sprintf('https://pkgs.alpinelinux.org/package/edge/main/x86_64/%s', get_names(pkgs))
   } else {
     rep(NA_character_, length(pkgs))
   }
