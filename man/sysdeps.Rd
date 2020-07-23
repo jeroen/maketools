@@ -28,6 +28,6 @@ more information about the package, such as configuration options, dependencies,
 and custom patches applied by the distribution maintainers.
 
 Because we use \code{ldd}, this only shows hard run-time dependencies of an installed
-R package. It does not show dependencies that are resolved at build-time, such as
-static or header-only libraries.
+R package. It does not show dependencies that are only needed at build-time, such
+as static or header-only libraries.
 }
