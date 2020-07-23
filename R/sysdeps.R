@@ -10,9 +10,11 @@
 #' more information about the library, such as configuration options, dependencies,
 #' and patches applied by the distribution.
 #'
-#' Because we use `ldd`, this only shows hard run-time dependencies of an installed
-#' R package. It does not show dependencies that are resolved at build-time, such as
-#' static or header-only libraries.
+#' This tool shows what a package links to, i.e. the run-time dependencies of an
+#' installed R package. This is particularly important to know if you want to
+#' distribute a pre-compiled binary of the R package. Note that this tool does not
+#' include dependencies that are only needed at build-time, such as static or
+#' header-only libraries.
 #'
 #' @export
 #' @rdname sysdeps
