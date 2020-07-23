@@ -149,6 +149,22 @@ has <- function(x){
   nchar(Sys.which(x)) > 0
 }
 
+get_apk_repo <- function(pkg_names){
+  vapply(pkg_names, function(pkg){
+    tryCatch({
+      text <- sys_call('apk', c('policy', pkg))
+      url <- grep('https?://', text, value = TRUE)
+      if(!length(url))
+        stop("fallthrough")
+      repo <- basename(url)
+      version <- basename(dirname(url))
+      paste(version, repo, sep = '/')
+    }, error = function(e){
+      'edge/main'
+    })
+  }, character(1), USE.NAMES = FALSE)
+}
+
 get_package_urls <- function(pkgs){
   os <- utils::sessionInfo()$running
   out <- if(grepl("ubuntu", os, ignore.case = TRUE)){
@@ -158,7 +174,8 @@ get_package_urls <- function(pkgs){
   } else if(grepl("fedora", os, ignore.case = TRUE)) {
     sprintf('https://src.fedoraproject.org/rpms/%s', get_source(pkgs))
   } else if(grepl("alpine", os, ignore.case = TRUE)) {
-    sprintf('https://pkgs.alpinelinux.org/package/edge/main/x86_64/%s', get_names(pkgs))
+    pkg_names <- get_names(pkgs)
+    sprintf('https://pkgs.alpinelinux.org/package/%s/x86_64/%s', get_apk_repo(pkg_names), pkg_names)
   } else {
     rep(NA_character_, length(pkgs))
   }
