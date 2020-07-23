@@ -11,9 +11,9 @@ package_sysdeps(pkg, lib.loc = NULL)
 package_sysdeps_string(pkg, lib.loc = NULL)
 }
 \arguments{
-\item{pkg}{name of an installed packages}
+\item{pkg}{name of an installed R package}
 
-\item{lib.loc}{path to the library of the package}
+\item{lib.loc}{path to the R package directory for this package}
 }
 \description{
 Finds the shared libraries that an installed R package links to by running
@@ -24,12 +24,10 @@ headers, and sources for this library.
 \details{
 For common Linux distributions, the output also includes a URL to the homepage
 of this package within the given Linux distribution. Here we can typically find
-more information about the library, such as configuration options, dependencies,
-and patches applied by the distribution.
+more information about the package, such as configuration options, dependencies,
+and custom patches applied by the distribution maintainers.
 
-This tool shows what a package links to, i.e. the run-time dependencies of an
-installed R package. This is particularly important to know if you want to
-distribute a pre-compiled binary of the R package. Note that this tool does not
-include dependencies that are only needed at build-time, such as static or
-header-only libraries.
+Because we use \code{ldd}, this only shows hard run-time dependencies of an installed
+R package. It does not show dependencies that are resolved at build-time, such as
+static or header-only libraries.
 }

@@ -7,20 +7,18 @@
 #'
 #' For common Linux distributions, the output also includes a URL to the homepage
 #' of this package within the given Linux distribution. Here we can typically find
-#' more information about the library, such as configuration options, dependencies,
-#' and patches applied by the distribution.
+#' more information about the package, such as configuration options, dependencies,
+#' and custom patches applied by the distribution maintainers.
 #'
-#' This tool shows what a package links to, i.e. the run-time dependencies of an
-#' installed R package. This is particularly important to know if you want to
-#' distribute a pre-compiled binary of the R package. Note that this tool does not
-#' include dependencies that are only needed at build-time, such as static or
-#' header-only libraries.
+#' Because we use `ldd`, this only shows hard run-time dependencies of an installed
+#' R package. It does not show dependencies that are resolved at build-time, such as
+#' static or header-only libraries.
 #'
 #' @export
 #' @rdname sysdeps
 #' @name sysdeps
-#' @param pkg name of an installed packages
-#' @param lib.loc path to the library of the package
+#' @param pkg name of an installed R package
+#' @param lib.loc path to the R package directory for this package
 package_sysdeps <- function(pkg, lib.loc = NULL){
   pkgpath <- system.file(package = pkg, lib.loc = lib.loc)
   if(!nchar(pkgpath))
