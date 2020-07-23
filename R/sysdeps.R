@@ -85,6 +85,7 @@ find_packages <- function(paths){
          dpkg = vapply(paths, dpkg_find_anywhere, character(1), USE.NAMES = FALSE),
          rpm = vapply(paths, rpm_find, character(1), USE.NAMES = FALSE),
          apk = vapply(paths, apk_find, character(1), USE.NAMES = FALSE),
+         pacman = vapply(paths, pacman_find, character(1), USE.NAMES = FALSE),
          rep(NA_character_, length(paths))
   )
 }
@@ -103,6 +104,15 @@ apk_find <- function(path){
 
 rpm_find <- function(path){
   tryCatch(sys_call('rpm', c('-qf', path, '--qf', "%{NAME}\t%{VERSION}\t%{SOURCERPM}\n")), error = function(e){
+    NA_character_
+  })
+}
+
+pacman_find <- function(path){
+  tryCatch({
+    str <- sys_call('pacman', c('-Qo', path))
+    paste(tail(strsplit(str, ' ', fixed = TRUE)[[1]], 2), collapse = '\t')
+  }, error = function(e){
     NA_character_
   })
 }
@@ -142,6 +152,8 @@ pkg_format <- function(){
     return('rpm')
   if(has('apk'))
     return('apk')
+  if(has('pacman'))
+    return('pacman')
   NA_character_
 }
 
@@ -154,14 +166,22 @@ get_apk_repo <- function(pkg_names){
     tryCatch({
       text <- sys_call('apk', c('policy', pkg))
       url <- grep('https?://', text, value = TRUE)
-      if(!length(url))
-        stop("fallthrough")
+      stopifnot(length(url) > 0)
       repo <- basename(url)
       version <- basename(dirname(url))
       paste(version, repo, sep = '/')
-    }, error = function(e){
-      'edge/main'
-    })
+    }, error = function(e){'edge/main'})
+  }, character(1), USE.NAMES = FALSE)
+}
+
+get_pacman_repo <- function(pkg_names){
+  vapply(pkg_names, function(pkg){
+    tryCatch({
+      text <- makeconf:::sys_call('pacman', c('-Si', pkg))
+      repo <- grep('^Repository', text, value = TRUE)[1]
+      stopifnot(length(repo) > 0)
+      utils::tail(strsplit(repo, ' ', fixed = TRUE)[[1]], 1)
+    }, error = function(e){'core'})
   }, character(1), USE.NAMES = FALSE)
 }
 
@@ -176,6 +196,10 @@ get_package_urls <- function(pkgs){
   } else if(grepl("alpine", os, ignore.case = TRUE)) {
     pkg_names <- get_names(pkgs)
     sprintf('https://pkgs.alpinelinux.org/package/%s/x86_64/%s', get_apk_repo(pkg_names), pkg_names)
+  } else if(grepl("arch", os, ignore.case = TRUE)) {
+    pkg_names <- get_names(pkgs)
+    repos <- get_pacman_repo(pkg_names)
+    sprintf("https://www.archlinux.org/packages/%s/x86_64/%s", repos, pkg_names)
   } else {
     rep(NA_character_, length(pkgs))
   }
