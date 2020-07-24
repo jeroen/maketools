@@ -58,6 +58,8 @@ package_links_to <- function(pkg, lib.loc = NULL){
     return(NULL)
   if(running_on('macos')){
     links_to_macos(dll)
+  } else if(running_on('windows')) {
+    links_to_windows(dll)
   } else {
     links_to_ldd(dll)
   }
@@ -74,6 +76,15 @@ links_to_ldd <- function(dll){
     utils::tail(strsplit(line, ' ', fixed = TRUE)[[1]], 1)
   })
   trimws(unlist(paths))
+}
+
+links_to_windows <- function(dll){
+  lddinfo <- sys_call('ldd', dll, error = FALSE)
+  lddinfo <- sub(" \\([a-f0-9x]+\\)$", "", lddinfo)
+  out <- vapply(strsplit(lddinfo, '=>', fixed = TRUE), function(x){
+    trimws(utils::tail(x, 1))
+  }, character(1), USE.NAMES = FALSE)
+  out[!grepl('^../windows/', out, ignore.case = TRUE)]
 }
 
 links_to_macos <- function(dll){
