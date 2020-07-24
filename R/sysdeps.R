@@ -48,7 +48,7 @@ package_links_to <- function(pkg, lib.loc = NULL){
   pkgpath <- system.file(package = pkg, lib.loc = lib.loc)
   if(!nchar(pkgpath))
     stop("Package not found")
-  dll <- file.path(pkgpath, sprintf('libs/%s.%s', pkg, .Platform$dynlib.ext))
+  dll <- file.path(pkgpath, sprintf('libs/%s%s', pkg, .Platform$dynlib.ext))
   if(!file.exists(dll)) # No compiled code
     return(NULL)
   if(grepl('macos', osVersion, ignore.case = TRUE)){
