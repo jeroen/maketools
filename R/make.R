@@ -8,8 +8,8 @@
 #' way to test if your compiler is working.
 #'
 #' @export
-#' @name r-compile
-#' @rdname r-compile
+#' @name make
+#' @rdname make
 #' @param target name of output file that you want to make
 #' @param makefile path to the `Makefile`. Defaults to the `Makeconf` which
 #' R uses when building R packages.
