@@ -21,7 +21,7 @@
 #' @param lib.loc path to the R package directory for this package
 package_sysdeps <- function(pkg, lib.loc = NULL){
   paths <- package_links_to(pkg = pkg, lib.loc = lib.loc)
-  skiplist <- c("libR", "libm", "libgcc_s", "libc", "ld-linux-x86-64")
+  skiplist <- c("libR", "libm", "libgcc_s", "libc", "ld-linux-x86-64", "libSystem.B")
   paths <- paths[is.na(match(dll_name_only(paths), skiplist))]
   pkgs <- find_packages(paths)
   data.frame(
@@ -72,7 +72,7 @@ links_to_ldd <- function(dll){
 }
 
 links_to_macos <- function(dll){
-  lddinfo <- makeconf:::sys_call('otool', c('-L', dll))
+  lddinfo <- sys_call('otool', c('-L', dll))
   m <- regexpr("/.*\\.(so|dylib)", lddinfo)
   Filter(function(x) {
     !identical(x, dll)
@@ -115,8 +115,19 @@ find_packages <- function(paths){
          rpm = vapply(paths, rpm_find, character(1), USE.NAMES = FALSE),
          apk = vapply(paths, apk_find, character(1), USE.NAMES = FALSE),
          pacman = vapply(paths, pacman_find, character(1), USE.NAMES = FALSE),
+         brew = vapply(paths, brew_find, character(1), USE.NAMES = FALSE),
          rep(NA_character_, length(paths))
   )
+}
+
+brew_find <- function(path){
+  path <- normalizePath(path) # expands symlink
+  pattern <- '/usr/local/Cellar/([^/]+)/([^/]+)/.*'
+  if(grepl(pattern, path)){
+    pkgname <- sub(pattern, '\\1\t\\2', path)
+  } else {
+    NA_character_
+  }
 }
 
 apk_find <- function(path){
@@ -208,11 +219,25 @@ get_apk_repo <- function(pkg_names){
 get_pacman_repo <- function(pkg_names){
   vapply(pkg_names, function(pkg){
     tryCatch({
-      text <- makeconf:::sys_call('pacman', c('-Si', pkg))
+      text <- sys_call('pacman', c('-Si', pkg))
       repo <- grep('^Repository', text, value = TRUE)[1]
       stopifnot(length(repo) > 0)
       utils::tail(strsplit(repo, ' ', fixed = TRUE)[[1]], 1)
     }, error = function(e){'core'})
+  }, character(1), USE.NAMES = FALSE)
+}
+
+get_brew_url <- function(pkg_names){
+  vapply(pkg_names, function(pkg){
+    tryCatch({
+      info <- sys_call('brew', c("info", pkg))
+      pattern <- "^From: (.*)$"
+      text <- grep(pattern, info, value = TRUE)
+      stopifnot(length(text) > 0)
+      sub(pattern, '\\1', text)
+    }, error = function(e){
+      sprintf('https://github.com/homebrew/homebrew-core/blob/master/Formula/%s.rb', pkg)
+    })
   }, character(1), USE.NAMES = FALSE)
 }
 
