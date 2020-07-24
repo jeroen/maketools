@@ -4,11 +4,14 @@
 \alias{sysdeps}
 \alias{package_sysdeps}
 \alias{package_sysdeps_string}
+\alias{package_links_to}
 \title{Package System Dependencies}
 \usage{
 package_sysdeps(pkg, lib.loc = NULL)
 
 package_sysdeps_string(pkg, lib.loc = NULL)
+
+package_links_to(pkg, lib.loc = NULL)
 }
 \arguments{
 \item{pkg}{name of an installed R package}

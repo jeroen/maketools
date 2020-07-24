@@ -20,25 +20,9 @@
 #' @param pkg name of an installed R package
 #' @param lib.loc path to the R package directory for this package
 package_sysdeps <- function(pkg, lib.loc = NULL){
-  pkgpath <- system.file(package = pkg, lib.loc = lib.loc)
-  if(!nchar(pkgpath))
-    stop("Package not found")
-  dll <- file.path(pkgpath, sprintf('libs/%s.so', pkg))
-  if(!file.exists(dll)) # No compiled code
-    return(NULL)
-  lddinfo <- sys_call('ldd', dll, error = FALSE)
-  lddinfo <- sub(" \\([a-f0-9x]+\\)$", "", lddinfo)
-  text <- sys_call('readelf', c('-d', dll))
-  text <- grep('^.*NEEDED.*\\[(.*)\\]$', text, value = TRUE)
-  shlibs <- sub('^.*NEEDED.*\\[(.*)\\]$', '\\1', text)
-  paths <- lapply(shlibs, function(x){
-    name <- strsplit(x, '.', fixed = TRUE)[[1]][1]
-    if(isTRUE(name %in% c("libR", "libm", "libgcc_s", "libc", "ld-linux-x86-64")))
-      return(NULL) # R itself already depends on these
-    line <- grep(x, lddinfo, fixed = TRUE, value = TRUE)
-    utils::tail(strsplit(line, ' ', fixed = TRUE)[[1]], 1)
-  })
-  paths <- trimws(unlist(paths))
+  paths <- package_links_to(pkg = pkg, lib.loc = lib.loc)
+  skiplist <- c("libR", "libm", "libgcc_s", "libc", "ld-linux-x86-64")
+  paths <- paths[is.na(match(dll_name_only(paths), skiplist))]
   pkgs <- find_packages(paths)
   data.frame(
     shlib = basename(paths),
@@ -56,6 +40,51 @@ package_sysdeps <- function(pkg, lib.loc = NULL){
 package_sysdeps_string <- function(pkg, lib.loc = NULL){
   df <- package_sysdeps(pkg = pkg, lib.loc = lib.loc)
   paste0(sprintf("%s (%s)", df$package, df$version), collapse = ", ")
+}
+
+#' @export
+#' @rdname sysdeps
+package_links_to <- function(pkg, lib.loc = NULL){
+  pkgpath <- system.file(package = pkg, lib.loc = lib.loc)
+  if(!nchar(pkgpath))
+    stop("Package not found")
+  dll <- file.path(pkgpath, sprintf('libs/%s.so', pkg))
+  if(!file.exists(dll)) # No compiled code
+    return(NULL)
+  if(grepl('macos', osVersion, ignore.case = TRUE)){
+    links_to_macos(dll)
+  } else {
+    links_to_ldd(dll)
+  }
+}
+
+links_to_ldd <- function(dll){
+  lddinfo <- sys_call('ldd', dll, error = FALSE)
+  lddinfo <- sub(" \\([a-f0-9x]+\\)$", "", lddinfo)
+  text <- sys_call('readelf', c('-d', dll))
+  text <- grep('^.*NEEDED.*\\[(.*)\\]$', text, value = TRUE)
+  shlibs <- sub('^.*NEEDED.*\\[(.*)\\]$', '\\1', text)
+  paths <- lapply(shlibs, function(x){
+    line <- grep(x, lddinfo, fixed = TRUE, value = TRUE)
+    utils::tail(strsplit(line, ' ', fixed = TRUE)[[1]], 1)
+  })
+  trimws(unlist(paths))
+}
+
+links_to_macos <- function(dll){
+  lddinfo <- makeconf:::sys_call('otool', c('-L', dll))
+  m <- regexpr("/.*\\.(so|dylib)", lddinfo)
+  Filter(function(x) {
+    !identical(x, dll)
+  }, regmatches(lddinfo, m))
+}
+
+dll_name_only <- function(path){
+  tools::file_path_sans_ext(strip_so_version(basename(path)))
+}
+
+strip_so_version <- function(dll){
+  sub("(\\.\\d+)*$", '', dll)
 }
 
 get_names <- function(str){
