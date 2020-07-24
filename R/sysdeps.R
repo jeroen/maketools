@@ -175,6 +175,8 @@ sys_call <- function(cmd, args = NULL, error = TRUE){
 }
 
 pkg_format <- function(){
+  if(running_on('macos'))
+    return('brew')
   if(has('dpkg') && has('apt'))
     return("dpkg")
   if(has('rpm')  && any(has(c('dnf', 'yum'))))
@@ -217,19 +219,25 @@ get_pacman_repo <- function(pkg_names){
 get_package_urls <- function(pkgs){
   os <- utils::sessionInfo()$running
   pkg_names <- get_names(pkgs)
-  out <- if(grepl("ubuntu", os, ignore.case = TRUE)){
+  out <- if(running_on('macos')){
+    sprintf('https://github.com/homebrew/homebrew-core/blob/master/Formula/%s.rb', pkg_names)
+  } else if(running_on("ubuntu")){
     sprintf('https://packages.ubuntu.com/%s/%s', get_disto(), pkg_names)
-  } else if(grepl("debian", os, ignore.case = TRUE)){
+  } else if(running_on("debian")){
     sprintf('https://packages.debian.org/%s/%s', get_disto(), pkg_names)
-  } else if(grepl("fedora", os, ignore.case = TRUE)) {
+  } else if(running_on("fedora")) {
     sprintf('https://src.fedoraproject.org/rpms/%s', get_source(pkgs))
-  } else if(grepl("alpine", os, ignore.case = TRUE)) {
+  } else if(running_on("alpine")) {
     sprintf('https://pkgs.alpinelinux.org/package/%s/x86_64/%s', get_apk_repo(pkg_names), pkg_names)
-  } else if(grepl("arch", os, ignore.case = TRUE)) {
+  } else if(running_on("arch")) {
     repos <- get_pacman_repo(pkg_names)
     sprintf("https://www.archlinux.org/packages/%s/x86_64/%s", repos, pkg_names)
   } else {
     rep(NA_character_, length(pkgs))
   }
   ifelse(is.na(pkgs), NA_character_, out)
+}
+
+running_on <- function(str){
+  isTRUE(grepl(str, utils::sessionInfo()$running, ignore.case = TRUE))
 }
