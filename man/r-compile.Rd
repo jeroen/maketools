@@ -30,5 +30,5 @@ make('testprog')
 system('./testprog')
 
 # Cleanup
-unlink(c('testprog.cc', 'testprog'))
+unlink('testprog*', recursive = TRUE)
 }

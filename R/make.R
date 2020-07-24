@@ -20,7 +20,7 @@
 #' system('./testprog')
 #'
 #' # Cleanup
-#' unlink(c('testprog.cc', 'testprog'))
+#' unlink('testprog*', recursive = TRUE)
 make <- function(target = 'all', makefile = r_makeconf_path()){
   status <- sys::exec_wait(r_make_path(), c(target, '-f', makefile))
   if(!identical(status, 0L))
