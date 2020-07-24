@@ -27,7 +27,7 @@ package_sysdeps <- function(pkg, lib.loc = NULL){
   data.frame(
     shlib = basename(paths),
     package = get_names(pkgs),
-    headers = get_names(find_packages(sub(".so[.0-9]+$", ".so", paths))),
+    headers = get_names(find_packages(strip_so_version(paths))),
     source = get_source(pkgs),
     version = get_versions(pkgs),
     url = get_package_urls(pkgs),
@@ -48,7 +48,7 @@ package_links_to <- function(pkg, lib.loc = NULL){
   pkgpath <- system.file(package = pkg, lib.loc = lib.loc)
   if(!nchar(pkgpath))
     stop("Package not found")
-  dll <- file.path(pkgpath, sprintf('libs/%s.so', pkg))
+  dll <- file.path(pkgpath, sprintf('libs/%s.%s', pkg, .Platform$dynlib.ext))
   if(!file.exists(dll)) # No compiled code
     return(NULL)
   if(grepl('macos', osVersion, ignore.case = TRUE)){
