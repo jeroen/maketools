@@ -25,7 +25,7 @@
 package_sysdeps <- function(pkg, lib.loc = NULL){
   if(running_on('windows'))
     stop("This function currently does not work on Windows.")
-  paths <- package_links_to(pkg = pkg, lib.loc = lib.loc)
+  paths <- as.character(package_links_to(pkg = pkg, lib.loc = lib.loc))
   skiplist <- c("libR", "libm", "libgcc_s", "libc", "ld-linux-x86-64", "libSystem.B")
   paths <- paths[is.na(match(dll_name_only(paths), skiplist))]
   pkgs <- find_packages(paths)
