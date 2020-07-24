@@ -19,18 +19,21 @@ package_links_to(pkg, lib.loc = NULL)
 \item{lib.loc}{path to the R package directory for this package}
 }
 \description{
-Finds the shared libraries that an installed R package links to by running
-\code{ldd} on the package \code{so} file. Then uses system package manager (e.g. \code{dpkg}
-or \code{rpm}) to locate the rpm/deb package that contains the shared libraries,
-headers, and sources for this library.
+Shows the external shared libraries that an installed R package is linked to
+by running \code{ldd} on the package \code{so} file. Then uses system package manager
+(e.g. \code{dpkg} or \code{rpm} or \code{brew}) to locate which system package that contains
+the binaries, headers, and (if available) sources for this library.
 }
 \details{
-For common Linux distributions, the output also includes a URL to the homepage
-of this package within the given Linux distribution. Here we can typically find
-more information about the package, such as configuration options, dependencies,
-and custom patches applied by the distribution maintainers.
+For common distributions, the output also includes a URL to the distro-homepage
+of the system package. Here we can typically find more information about the
+package, such as configuration options, dependencies, and custom patches applied
+by your distribution.
 
-Because we use \code{ldd}, this only shows hard run-time dependencies of an installed
-R package. It does not show dependencies that are only needed at build-time, such
-as static or header-only libraries.
+Because we use \code{ldd}, this only shows run-time dependencies of an installed R
+package. This is especially relevant if you distribute the compiled R package
+in binary form, because the same external libraries need to be available on
+the user/deployment machine. This tool does not show dependencies that are
+only needed at build-time, such as static or header-only libraries, and other
+utilities required to build the package.
 }

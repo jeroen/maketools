@@ -1,18 +1,21 @@
 #' Package System Dependencies
 #'
-#' Finds the shared libraries that an installed R package links to by running
-#' `ldd` on the package `so` file. Then uses system package manager (e.g. `dpkg`
-#' or `rpm`) to locate the rpm/deb package that contains the shared libraries,
-#' headers, and sources for this library.
+#' Shows the external shared libraries that an installed R package is linked to
+#' by running `ldd` on the package `so` file. Then uses system package manager
+#' (e.g. `dpkg` or `rpm` or `brew`) to locate which system package that contains
+#' the binaries, headers, and (if available) sources for this library.
 #'
-#' For common Linux distributions, the output also includes a URL to the homepage
-#' of this package within the given Linux distribution. Here we can typically find
-#' more information about the package, such as configuration options, dependencies,
-#' and custom patches applied by the distribution maintainers.
+#' For common distributions, the output also includes a URL to the distro-homepage
+#' of the system package. Here we can typically find more information about the
+#' package, such as configuration options, dependencies, and custom patches applied
+#' by your distribution.
 #'
-#' Because we use `ldd`, this only shows hard run-time dependencies of an installed
-#' R package. It does not show dependencies that are only needed at build-time, such
-#' as static or header-only libraries.
+#' Because we use `ldd`, this only shows run-time dependencies of an installed R
+#' package. This is especially relevant if you distribute the compiled R package
+#' in binary form, because the same external libraries need to be available on
+#' the user/deployment machine. This tool does not show dependencies that are
+#' only needed at build-time, such as static or header-only libraries, and other
+#' utilities required to build the package.
 #'
 #' @export
 #' @rdname sysdeps
@@ -20,6 +23,8 @@
 #' @param pkg name of an installed R package
 #' @param lib.loc path to the R package directory for this package
 package_sysdeps <- function(pkg, lib.loc = NULL){
+  if(running_on('windows'))
+    stop("This function currently does not work on Windows.")
   paths <- package_links_to(pkg = pkg, lib.loc = lib.loc)
   skiplist <- c("libR", "libm", "libgcc_s", "libc", "ld-linux-x86-64", "libSystem.B")
   paths <- paths[is.na(match(dll_name_only(paths), skiplist))]
@@ -51,7 +56,7 @@ package_links_to <- function(pkg, lib.loc = NULL){
   dll <- file.path(pkgpath, sprintf('libs%s/%s%s', Sys.getenv('R_ARCH'), pkg, .Platform$dynlib.ext))
   if(!file.exists(dll)) # No compiled code
     return(NULL)
-  if(grepl('macos', osVersion, ignore.case = TRUE)){
+  if(running_on('macos')){
     links_to_macos(dll)
   } else {
     links_to_ldd(dll)
