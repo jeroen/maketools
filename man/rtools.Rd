@@ -2,17 +2,14 @@
 % Please edit documentation in R/rtools.R
 \name{rtools}
 \alias{rtools}
-\alias{rtools_info}
 \alias{rtools_find}
-\alias{rtools_setup}
+\alias{rtools_registry_info}
 \alias{rtools_install}
 \title{Find or Setup Rtools}
 \usage{
-rtools_info()
-
 rtools_find()
 
-rtools_setup()
+rtools_registry_info()
 
 rtools_install(silent = TRUE)
 }
@@ -38,12 +35,13 @@ for compiling packages on R-4.0 and newer
 required for compiling packages on R-3.6 and older
 }
 
-The function \link{rtools_info} lists the Rtools versions that are installed
-on your system (without touching any configurations).
+The function \link{rtools_find} shows information about a suitable version of
+Rtools installed on your system. It returns \code{NULL} if no suitable version
+is found.
 
-The \link{rtools_setup} function interactively guides the user through setting
+The \link{rtools_install} function interactively guides the user through setting
 up and/or configuring Rtools. If rtools is not already installed, it will
 prompt the user to do so. If needed, it sets the PATH and other variables
-to the correct values. After running \code{rtools_setup()} everything is set
+to the correct values. After running \code{rtools_install()} everything is set
 to install packages from source using \link{install.packages} and others.
 }

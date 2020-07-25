@@ -13,20 +13,33 @@
 #'  - [rtools35](https://cran.r-project.org/bin/windows/Rtools/history.html):
 #'  required for compiling packages on R-3.6 and older
 #'
-#' The function [rtools_info] lists the Rtools versions that are installed
-#' on your system (without touching any configurations).
+#' The function [rtools_find] shows information about a suitable version of
+#' Rtools installed on your system. It returns `NULL` if no suitable version
+#' is found.
 #'
-#' The [rtools_setup] function interactively guides the user through setting
+#' The [rtools_install] function interactively guides the user through setting
 #' up and/or configuring Rtools. If rtools is not already installed, it will
 #' prompt the user to do so. If needed, it sets the PATH and other variables
-#' to the correct values. After running `rtools_setup()` everything is set
+#' to the correct values. After running `rtools_install()` everything is set
 #' to install packages from source using [install.packages] and others.
 #'
 #' @export
 #' @name rtools
 #' @rdname rtools
 #' @importFrom utils download.file
-rtools_info <- function(){
+rtools_find <- function(){
+  info <- rtools_registry_info()
+  for(x in info){
+    if(isTRUE(x$compatible)) {
+      return(x)
+    }
+  }
+  return(NULL)
+}
+
+#' @export
+#' @rdname rtools
+rtools_registry_info <- function(){
   assert_windows()
   installs <- lapply(c("64-bit", "32-bit"), function(view){
     x <- read_registery("SOFTWARE\\R-core\\Rtools", view = view)
@@ -63,53 +76,29 @@ rtools_info <- function(){
   structure(installs, names = c("rtools4", "rtools3"))
 }
 
-#' @export
-#' @rdname rtools
-rtools_find <- function(){
-  info <- rtools_info()
-  for(x in info){
-    if(isTRUE(x$compatible)) {
-      return(x)
-    }
-  }
-  return(NULL)
-}
-
-
-#' @export
-#' @rdname rtools
 #' @importFrom utils head tail askYesNo
 rtools_setup <- function(){
-  assert_windows()
   info <- rtools_find()
-  if(!isTRUE(info$available)){
-    if(interactive() && isTRUE(askYesNo('Rtools not found. Would you like to install it now?'))){
-      rtools_install()
-      info <- rtools_find()
+  minfo <- make_info()
+  if(!isTRUE(minfo$available && grepl("GNU", minfo$version))){
+    if(length(info$PATH)){
+      message(sprintf("Adding %s to the PATH", info$PATH))
+      Sys.setenv(PATH = paste0(info$PATH, ';', Sys.getenv('PATH')))
     } else {
-      stop("Rtools not found. Please run: rtools_install()")
+      message("No suitable Rtools found. Run rtools_install() to get one.")
     }
-  }
-  rtools_make <- Sys.which(file.path(info$PATH, 'make'))
-  if(unname(Sys.which('make')) == normalizePath(rtools_make)){
-    message(sprintf("Correct make already on the path: %s", rtools_make))
-  } else {
-    message(sprintf("Adding %s to the PATH", info$PATH))
-    Sys.setenv(PATH = paste0(info$PATH, ';', Sys.getenv('PATH')))
   }
   ccinfo <- cc_info()
   if(!isTRUE(ccinfo$available)){
     Sys.setenv(BINPREF = info$BINPREF)
     ccinfo <- cc_info()
     if(isTRUE(ccinfo$available)){
-      message("Successfully set BINPREF variable")
+      message("BINPREF variable set by maketools")
     } else {
       Sys.unsetenv('BINPREF')
     }
   }
-  print_diagnostics()
 }
-
 
 #' @export
 #' @rdname rtools
@@ -145,6 +134,7 @@ rtools_install <- function(silent = TRUE){
   message("Starting installer in separate window, please wait...")
   utils::flush.console()
   if(identical(sys::exec_status(pid), 0L)) message("Success!")
+  rtools_setup()
 }
 
 read_registery <- function(key, view){
