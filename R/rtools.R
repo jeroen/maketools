@@ -88,7 +88,7 @@ rtools_setup <- function(){
 #' @rdname rtools
 #' @param silent perform automatic unattended installation (answer YES
 #' to all questions)
-rtools_install <- function(silent = FALSE){
+rtools_install <- function(silent = TRUE){
   assert_windows()
   need_gcc <- Sys.getenv('R_COMPILED_BY')
   if(!is_string(need_gcc)){
@@ -113,7 +113,7 @@ rtools_install <- function(silent = FALSE){
   on.exit(unlink(installer))
   download.file(url, installer, mode = 'wb')
   args <- if(isTRUE(silent)){
-    c('/VERYSILENT', '-Wait')
+    c('/SILENT', '-Wait')
   }
 
   # Wait but don't kill the installer when user interrupts

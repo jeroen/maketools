@@ -11,7 +11,7 @@ rtools_info()
 
 rtools_setup()
 
-rtools_install(silent = FALSE)
+rtools_install(silent = TRUE)
 }
 \arguments{
 \item{silent}{perform automatic unattended installation (answer YES
