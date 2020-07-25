@@ -44,7 +44,8 @@ rtools_info <- function(){
       compatible = compatible
     )
   })
-  Filter(length, installs)
+  #NB: in theory, rtools40 can be on 32-bit Windows but this is very rare
+  structure(installs, names = c("rtools40", "legacy"))
 }
 
 
