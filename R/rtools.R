@@ -86,6 +86,7 @@ rtools_setup <- function(){
       Sys.setenv(PATH = paste0(info$PATH, ';', Sys.getenv('PATH')))
     } else {
       message("No suitable Rtools found. Run rtools_install() to get one.")
+      return(NULL)
     }
   }
   ccinfo <- cc_info()
