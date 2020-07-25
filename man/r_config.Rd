@@ -8,6 +8,7 @@
 \alias{cxx14_info}
 \alias{cxx17_info}
 \alias{fc_info}
+\alias{r_cmd_config}
 \title{R CMD Config}
 \usage{
 cc_info()
@@ -21,6 +22,11 @@ cxx14_info()
 cxx17_info()
 
 fc_info()
+
+r_cmd_config(VAR = "--all")
+}
+\arguments{
+\item{VAR}{value passed to \verb{R CMD config} such as \code{CXX} or \code{FC}}
 }
 \description{
 Cross-platform wrappers for \verb{R CMD config} to lookup the availability

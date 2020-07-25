@@ -45,6 +45,23 @@ fc_info <- function(){
   make_get_info('FC', 'FCFLAGS')
 }
 
+#' @export
+#' @rdname r_config
+#' @importFrom sys as_text exec_internal
+#' @param VAR value passed to `R CMD config` such as `CXX` or `FC`
+r_cmd_config <- function(VAR = '--all'){
+  assert_make_available()
+  R <- file.path(R.home('bin'), 'R')
+  outcon <- rawConnection(raw(0), "r+")
+  on.exit(close(outcon), add = TRUE)
+  out <- exec_internal(R, c("CMD", "config", VAR), error = FALSE)
+  if(out$status == 0){
+    as_text(out$stdout)
+  } else {
+    stop(as_text(c(out$stdout, out$stderr)), call. = FALSE)
+  }
+}
+
 make_get_info <-function(VAR, FLAGS = NULL, STD = NULL, args = '--version'){
   PATH <- r_cmd_config(VAR)
   if(length(FLAGS))
