@@ -93,7 +93,7 @@ rtools_setup <- function(){
     Sys.setenv(BINPREF = info$BINPREF)
     ccinfo <- cc_info()
     if(isTRUE(ccinfo$available)){
-      message("BINPREF variable set by maketools")
+      message(sprintf("Setting BINPREF to %s (maketools)", info$BINPREF))
     } else {
       Sys.unsetenv('BINPREF')
     }
