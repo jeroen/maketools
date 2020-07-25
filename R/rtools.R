@@ -32,8 +32,6 @@ rtools_info <- function(){
       api <- NA
       compatible <- NA
     }
-
-
     list(
       version = version,
       compiler = gcc_version,
@@ -44,8 +42,9 @@ rtools_info <- function(){
       compatible = compatible
     )
   })
-  #NB: in theory, rtools40 can be on 32-bit Windows but this is very rare
-  structure(installs, names = c("rtools40", "legacy"))
+  # In theory, rtools40 can be 32-bit Windows host but this is very rare
+  # and probably the above doesn't work in that case anyway.
+  structure(installs, names = c("rtools4", "rtools3"))
 }
 
 
