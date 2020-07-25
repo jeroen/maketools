@@ -63,17 +63,29 @@ rtools_info <- function(){
   structure(installs, names = c("rtools4", "rtools3"))
 }
 
+#' @export
+#' @rdname rtools
+rtools_find <- function(){
+  info <- rtools_info()
+  for(x in info){
+    if(isTRUE(x$compatible)) {
+      return(x)
+    }
+  }
+  return(NULL)
+}
+
 
 #' @export
 #' @rdname rtools
 #' @importFrom utils head tail askYesNo
 rtools_setup <- function(){
   assert_windows()
-  info <- rtools_find_gcc(Sys.getenv('R_COMPILED_BY'))
+  info <- rtools_find()
   if(!isTRUE(info$available)){
     if(interactive() && isTRUE(askYesNo('Rtools not found. Would you like to install it now?'))){
       rtools_install()
-      info <- rtools_find_gcc(Sys.getenv('R_COMPILED_BY'))
+      info <- rtools_find()
     } else {
       stop("Rtools not found. Please run: rtools_install()")
     }
@@ -106,16 +118,12 @@ rtools_setup <- function(){
 #' the usual installation wizard.
 rtools_install <- function(silent = TRUE){
   assert_windows()
-  need_gcc <- Sys.getenv('R_COMPILED_BY')
-  if(!is_string(need_gcc)){
-    stop("Did not find R_COMPILED_BY variable")
-  }
-  info <- rtools_find_gcc(need_gcc)
+  info <- rtools_find()
   if(isTRUE(info$available)) {
-    message(sprintf("Rtools %s with %s already installed: %s", info$rtools, need_gcc, info$PATH))
+    message(sprintf("Rtools %s with %s already installed: %s", info$rtools, info$compiler, info$PATH))
     return(invisible())
   }
-
+  need_gcc <- Sys.getenv('R_COMPILED_BY')
   if(grepl('4.9.3', need_gcc)){
     message('Need GCC 4.9.3... downloading rtools35...')
     url <- 'https://cloud.r-project.org/bin/windows/Rtools/Rtools35.exe'
@@ -137,17 +145,6 @@ rtools_install <- function(silent = TRUE){
   message("Starting installer in separate window, please wait...")
   utils::flush.console()
   if(identical(sys::exec_status(pid), 0L)) message("Success!")
-}
-
-
-rtools_find_gcc <- function(need_gcc){
-  info <- rtools_info()
-  for(x in info){
-    if(isTRUE(x$compatible)) {
-      return(x)
-    }
-  }
-  return(NULL)
 }
 
 read_registery <- function(key, view){

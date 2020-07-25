@@ -3,11 +3,14 @@
 \name{rtools}
 \alias{rtools}
 \alias{rtools_info}
+\alias{rtools_find}
 \alias{rtools_setup}
 \alias{rtools_install}
 \title{Find or Setup Rtools}
 \usage{
 rtools_info()
+
+rtools_find()
 
 rtools_setup()
 
