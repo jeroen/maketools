@@ -14,7 +14,7 @@ print_diagnostics <- function(){
     packageStartupMessage('No "make" on the PATH. R will not be able to compile code')
     if(is_windows()){
       url <- 'https://cran.r-project.org/bin/windows/Rtools/'
-      packageStartupMessage("Please run maketools::rtools_setup() or visit: ", url)
+      packageStartupMessage("Please run maketools::rtools_install() or visit: ", url)
     }
     return()
   }
