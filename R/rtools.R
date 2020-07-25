@@ -35,7 +35,7 @@ rtools_info <- function(){
 
 
     list(
-      rtools = version,
+      version = version,
       compiler = gcc_version,
       api = api,
       PATH = bindir,
