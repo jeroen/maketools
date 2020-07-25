@@ -118,6 +118,8 @@ rtools_install <- function(silent = TRUE){
 
   # Wait but don't kill the installer when user interrupts
   pid <- sys::exec_background(installer, as.character(args))
+  message("Starting installer in separate window, please wait...")
+  utils::flush.console()
   if(identical(sys::exec_status(pid), 0L)) message("Success!")
 }
 
