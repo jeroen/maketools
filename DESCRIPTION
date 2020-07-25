@@ -15,7 +15,7 @@ Description: Packages with C, C++, or Fortran code require a properly configured
     that a installed R package is linked to, by inspecting output from 'ldd' in 
     combination with information from the distribution package manager, e.g. 
     'rpm' or 'dpkg'. For Windows there are special utilities to automatically
-    find or install the suitable version of the Rtools build environment, and 
+    find or install the suitable version of the 'Rtools' build environment, and 
     diagnose some common problems.
 License: MIT + file LICENSE
 URL: https://github.com/jeroen/maketools
