@@ -29,7 +29,7 @@ package_sysdeps <- function(pkg, lib.loc = NULL){
   skiplist <- c("libR", "libm", "libgcc_s", "libc", "ld-linux-x86-64", "libSystem.B")
   paths <- paths[is.na(match(dll_name_only(paths), skiplist))]
   pkgs <- find_packages(paths)
-  data.frame(
+  df <- data.frame(
     shlib = basename(paths),
     package = get_names(pkgs),
     headers = get_names(find_packages(strip_so_version(paths))),
@@ -38,6 +38,7 @@ package_sysdeps <- function(pkg, lib.loc = NULL){
     url = get_package_urls(pkgs),
     stringsAsFactors = FALSE
   )
+  df_as_tibble(df)
 }
 
 #' @export

@@ -30,11 +30,12 @@ pc_pkg_info(pkg = "libcurl")
 \item{static}{get libs for static linking, i.e. include dependencies}
 }
 \description{
-Wrappers for the pkg-config utility to query information on C/C++
-libraries installed on your system.
+Wrappers for the pkg-config utility to query information on C/C++ libraries
+that are available on your system.
 }
 \examples{
 # Check if pkg-config is available
-pc_info()
-pc_pkg_list()
+(info <- pc_info())
+if(info$available)
+  pc_pkg_list()
 }

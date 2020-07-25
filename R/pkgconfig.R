@@ -1,12 +1,14 @@
 #' Query pkg-config
 #'
-#' Wrappers for the pkg-config utility to query information on C/C++
-#' libraries installed on your system.
+#' Wrappers for the pkg-config utility to query information on C/C++ libraries
+#' that are available on your system.
 #'
 #' @export
 #' @rdname pkgconfig
 #' @examples # Check if pkg-config is available
-#' pc_info()
+#' (info <- pc_info())
+#' if(info$available)
+#'   pc_pkg_list()
 pc_info <- function(){
   name <- pkgconfig_name()
   path <- pkgconfig_path(name, error = FALSE)
@@ -29,7 +31,6 @@ pc_info <- function(){
 
 #' @export
 #' @rdname pkgconfig
-#' @examples pc_pkg_list()
 pc_pkg_list <- function(){
   txt <- pkg_config_call('--list-all')
   names <- gsub('\\s+.*', '', txt)
