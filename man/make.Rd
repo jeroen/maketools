@@ -36,6 +36,7 @@ way to test if the compiler is working.
 }
 \examples{
 # Test the CXX compiler
+if(cxx_info()$available){
 testprog <- '#include <iostream>\nint main() {std::cout << "Hello World!";}'
 writeLines(testprog, con = 'testprog.cc')
 make('testprog')
@@ -43,6 +44,7 @@ make('testprog')
 # Test and cleanup
 system('./testprog')
 unlink('testprog*', recursive = TRUE)
+}
 
 # Run a program from a make variable
 make_call('$(CXX)', '--version')

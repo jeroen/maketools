@@ -10,6 +10,7 @@ Description: The 'Makeconf' file is used by R to store system specific
     the local configuration. It is particularly helpful on Windows and MacOS
     where compilers have to be installed manually via Rtools or Xcode.
 License: MIT + file LICENSE
+URL: https://github.com/jeroen/maketools
 Encoding: UTF-8
 LazyData: true
 Imports: sys (>= 3.1)
