@@ -105,7 +105,7 @@ rtools_install <- function(silent = TRUE){
     url <- 'https://cloud.r-project.org/bin/windows/Rtools/Rtools35.exe'
   } else if(grepl('8\\.\\d\\.\\d', need_gcc)){
     message('Need GCC 8... downloading rtools40...')
-    url <- 'https://cran.r-project.org/bin/windows/testing/rtools40-x86_64.exe'
+    url <- 'https://cran.r-project.org/bin/windows/Rtools/rtools40-x86_64.exe'
   } else {
     stop("Unsupported version of GCC: ", need_gcc)
   }
