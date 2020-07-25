@@ -1,0 +1,22 @@
+language: r
+cache: packages
+latex: false
+fortran: false
+
+matrix:
+  include:
+    - dist: precise
+      r: 3.5.3
+    - dist: trusty
+    - dist: xenial
+    - os: osx
+      osx_image: xcode11.4
+    - os: osx
+      osx_image: xcode10.2
+    - os: osx
+      osx_image: xcode9.4
+
+addons:
+  apt:
+    packages:
+    - libcurl4-openssl-dev
