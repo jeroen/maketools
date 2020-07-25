@@ -1,6 +1,6 @@
 Package: maketools
 Type: Package
-Title: Tools for Exploring and Debugging your Compiler Environment
+Title: Exploring and Testing your Toolchain Configuration and System Packages
 Version: 0.1
 Authors@R: person("Jeroen", "Ooms", role = c("aut", "cre"), 
     email = "jeroen@berkeley.edu", comment = c(ORCID = "0000-0002-4035-0289"))
@@ -15,3 +15,6 @@ LazyData: true
 Imports: sys (>= 3.1)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+Suggests: 
+    curl,
+    testthat

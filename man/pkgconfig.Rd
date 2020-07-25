@@ -2,27 +2,27 @@
 % Please edit documentation in R/pkgconfig.R
 \name{pc_info}
 \alias{pc_info}
-\alias{pkg_list}
-\alias{pkg_exists}
-\alias{pkg_version}
-\alias{pkg_cflags}
-\alias{pkg_libs}
-\alias{pkg_info}
+\alias{pc_pkg_list}
+\alias{pc_pkg_exists}
+\alias{pc_pkg_version}
+\alias{pc_pkg_cflags}
+\alias{pc_pkg_libs}
+\alias{pc_pkg_info}
 \title{Query pkg-config}
 \usage{
 pc_info()
 
-pkg_list()
+pc_pkg_list()
 
-pkg_exists(pkg = "libcurl")
+pc_pkg_exists(pkg = "libcurl")
 
-pkg_version(pkg = "libcurl")
+pc_pkg_version(pkg = "libcurl")
 
-pkg_cflags(pkg = "libcurl")
+pc_pkg_cflags(pkg = "libcurl")
 
-pkg_libs(pkg = "libcurl", static = FALSE)
+pc_pkg_libs(pkg = "libcurl", static = FALSE)
 
-pkg_info(pkg = "libcurl")
+pc_pkg_info(pkg = "libcurl")
 }
 \arguments{
 \item{pkg}{names of the pkg-config libraries to query}
@@ -36,5 +36,5 @@ libraries installed on your system.
 \examples{
 # Check if pkg-config is available
 pc_info()
-pkg_list()
+pc_pkg_list()
 }

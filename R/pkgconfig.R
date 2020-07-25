@@ -29,8 +29,8 @@ pc_info <- function(){
 
 #' @export
 #' @rdname pkgconfig
-#' @examples pkg_list()
-pkg_list <- function(){
+#' @examples pc_pkg_list()
+pc_pkg_list <- function(){
   txt <- pkg_config_call('--list-all')
   names <- gsub('\\s+.*', '', txt)
   desc <- gsub('^\\S+\\s+', '', txt)
@@ -41,37 +41,37 @@ pkg_list <- function(){
 
 #' @export
 #' @rdname pkgconfig
-pkg_exists <- function(pkg = 'libcurl'){
+pc_pkg_exists <- function(pkg = 'libcurl'){
   sys::exec_wait(pkgconfig_path(), c('--exists', pkg)) == 0
 }
 
 #' @export
 #' @rdname pkgconfig
-pkg_version <- function(pkg = 'libcurl'){
+pc_pkg_version <- function(pkg = 'libcurl'){
   as.numeric_version(pkg_config_call(c('--modversion', pkg)))
 }
 
 #' @export
 #' @rdname pkgconfig
 #' @param pkg names of the pkg-config libraries to query
-pkg_cflags <- function(pkg = 'libcurl'){
+pc_pkg_cflags <- function(pkg = 'libcurl'){
   pkg_config_call(c('--cflags', pkg))
 }
 
 #' @export
 #' @rdname pkgconfig
 #' @param static get libs for static linking, i.e. include dependencies
-pkg_libs <- function(pkg = 'libcurl', static = FALSE){
+pc_pkg_libs <- function(pkg = 'libcurl', static = FALSE){
   pkg_config_call(c("--libs", if(isTRUE(static)) "--static", pkg))
 }
 
 #' @export
 #' @rdname pkgconfig
-pkg_info <- function(pkg = 'libcurl'){
+pc_pkg_info <- function(pkg = 'libcurl'){
   list (
-    version = pkg_version(pkg),
-    cflags = pkg_cflags(pkg),
-    libs = pkg_libs(pkg)
+    version = pc_pkg_version(pkg),
+    cflags = pc_pkg_cflags(pkg),
+    libs = pc_pkg_libs(pkg)
   )
 }
 

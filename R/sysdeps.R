@@ -245,6 +245,8 @@ get_pacman_repo <- function(pkg_names){
 
 get_brew_url <- function(pkg_names){
   vapply(pkg_names, function(pkg){
+    if(is.na(pkg))
+      return(NA_character_)
     tryCatch({
       info <- sys_call('brew', c("info", pkg))
       pattern <- "^From: (.*)$"
@@ -261,7 +263,7 @@ get_package_urls <- function(pkgs){
   os <- utils::sessionInfo()$running
   pkg_names <- get_names(pkgs)
   out <- if(running_on('macos')){
-    sprintf('https://github.com/homebrew/homebrew-core/blob/master/Formula/%s.rb', pkg_names)
+    get_brew_url(pkg_names)
   } else if(running_on("ubuntu")){
     sprintf('https://packages.ubuntu.com/%s/%s', get_disto(), pkg_names)
   } else if(running_on("debian")){

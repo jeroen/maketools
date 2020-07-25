@@ -10,3 +10,5 @@ src/Makevars
 .DS_Store
 src/gcc_version.txt
 windows
+.travis.yml
+appveyor.yml
