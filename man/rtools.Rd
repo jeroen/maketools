@@ -36,8 +36,9 @@ required for compiling packages on R-3.6 and older
 }
 
 The function \link{rtools_find} shows information about a suitable version of
-Rtools installed on your system. It returns \code{NULL} if no suitable version
-is found.
+Rtools installed on your system. If needed, it automatically adds \code{make}
+to the PATH of the current session. It returns \code{NULL} if no suitable version
+is installed on the system.
 
 The \link{rtools_install} function interactively guides the user through setting
 up and/or configuring Rtools. If rtools is not already installed, it will

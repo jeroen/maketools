@@ -14,8 +14,9 @@
 #'  required for compiling packages on R-3.6 and older
 #'
 #' The function [rtools_find] shows information about a suitable version of
-#' Rtools installed on your system. It returns `NULL` if no suitable version
-#' is found.
+#' Rtools installed on your system. If needed, it automatically adds `make`
+#' to the PATH of the current session. It returns `NULL` if no suitable version
+#' is installed on the system.
 #'
 #' The [rtools_install] function interactively guides the user through setting
 #' up and/or configuring Rtools. If rtools is not already installed, it will
@@ -110,8 +111,8 @@ rtools_install <- function(silent = TRUE){
   assert_windows()
   info <- rtools_find()
   if(isTRUE(info$available)) {
-    message(sprintf("Rtools %s with %s already installed: %s", info$rtools, info$compiler, info$PATH))
-    return(invisible())
+    message(sprintf("Rtools %s with %s already installed: %s", info$version, info$compiler, info$PATH))
+    invisible(info)
   }
   need_gcc <- Sys.getenv('R_COMPILED_BY')
   if(grepl('4.9.3', need_gcc)){
@@ -135,7 +136,7 @@ rtools_install <- function(silent = TRUE){
   message("Starting installer in separate window, please wait...")
   utils::flush.console()
   if(identical(sys::exec_status(pid), 0L)) message("Success!")
-  rtools_find()
+  invisible(rtools_find())
 }
 
 read_registery <- function(key, view){
