@@ -26,8 +26,32 @@
 #' @export
 #' @name rtools
 #' @rdname rtools
-#' @importFrom utils download.file
+#' @importFrom utils download.file head tail askYesNo
 rtools_find <- function(){
+  info <- rtools_get_compatible()
+  minfo <- make_info()
+  if(!isTRUE(minfo$available && grepl("GNU", minfo$version))){
+    if(length(info$PATH)){
+      message(sprintf("Adding %s to the PATH", info$PATH))
+      Sys.setenv(PATH = paste0(info$PATH, ';', Sys.getenv('PATH')))
+    } else {
+      return(NULL)
+    }
+  }
+  ccinfo <- cc_info()
+  if(!isTRUE(ccinfo$available) && length(info$BINPREF)){
+    Sys.setenv(BINPREF = info$BINPREF)
+    ccinfo <- cc_info()
+    if(isTRUE(ccinfo$available)){
+      message(sprintf("Setting BINPREF to %s (maketools)", info$BINPREF))
+    } else {
+      Sys.unsetenv('BINPREF')
+    }
+  }
+  return(info)
+}
+
+rtools_get_compatible <- function(){
   info <- rtools_registry_info()
   for(x in info){
     if(isTRUE(x$compatible)) {
@@ -36,6 +60,7 @@ rtools_find <- function(){
   }
   return(NULL)
 }
+
 
 #' @export
 #' @rdname rtools
@@ -76,30 +101,6 @@ rtools_registry_info <- function(){
   structure(installs, names = c("rtools4", "rtools3"))
 }
 
-#' @importFrom utils head tail askYesNo
-rtools_setup <- function(){
-  info <- rtools_find()
-  minfo <- make_info()
-  if(!isTRUE(minfo$available && grepl("GNU", minfo$version))){
-    if(length(info$PATH)){
-      message(sprintf("Adding %s to the PATH", info$PATH))
-      Sys.setenv(PATH = paste0(info$PATH, ';', Sys.getenv('PATH')))
-    } else {
-      return(NULL)
-    }
-  }
-  ccinfo <- cc_info()
-  if(!isTRUE(ccinfo$available)){
-    Sys.setenv(BINPREF = info$BINPREF)
-    ccinfo <- cc_info()
-    if(isTRUE(ccinfo$available)){
-      message(sprintf("Setting BINPREF to %s (maketools)", info$BINPREF))
-    } else {
-      Sys.unsetenv('BINPREF')
-    }
-  }
-}
-
 #' @export
 #' @rdname rtools
 #' @param silent performs automatic unattended installation with all
@@ -134,7 +135,7 @@ rtools_install <- function(silent = TRUE){
   message("Starting installer in separate window, please wait...")
   utils::flush.console()
   if(identical(sys::exec_status(pid), 0L)) message("Success!")
-  rtools_setup()
+  rtools_find()
 }
 
 read_registery <- function(key, view){

@@ -10,6 +10,6 @@
 
 .onLoad <- function(lib, pkg){
   if(is_windows()){
-    rtools_setup()
+    rtools_find()
   }
 }

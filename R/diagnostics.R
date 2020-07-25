@@ -7,11 +7,11 @@
 print_diagnostics <- function(){
   if(is_windows()){
     gcc_required <- Sys.getenv('R_COMPILED_BY', "???")
-    packageStartupMessage(sprintf("This R for Windows was compiled with %s", gcc_required))
+    packageStartupMessage(sprintf("This R for Windows was compiled with %s.", gcc_required))
   }
   minfo <- make_info()
   if(minfo$available == FALSE){
-    packageStartupMessage('No "make" on the PATH. R will not be able to compile code')
+    packageStartupMessage('No "make" on the PATH. R will not be able to compile code.')
     if(is_windows()){
       url <- 'https://cran.r-project.org/bin/windows/Rtools/'
       packageStartupMessage("Please run maketools::rtools_install() or visit: ", url)
