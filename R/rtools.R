@@ -112,7 +112,7 @@ rtools_install <- function(silent = TRUE){
   info <- rtools_find()
   if(isTRUE(info$available)) {
     message(sprintf("Rtools %s with %s already installed: %s", info$version, info$compiler, info$PATH))
-    invisible(info)
+    return(invisible(info))
   }
   need_gcc <- Sys.getenv('R_COMPILED_BY')
   if(grepl('4.9.3', need_gcc)){
