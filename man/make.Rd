@@ -53,3 +53,12 @@ make_call('$(CXX)', '--version')
 make_info()
 
 }
+\seealso{
+Other maketools: 
+\code{\link{diagnostics}},
+\code{\link{pkgconfig}},
+\code{\link{r_config}},
+\code{\link{rtools}},
+\code{\link{sysdeps}}
+}
+\concept{maketools}

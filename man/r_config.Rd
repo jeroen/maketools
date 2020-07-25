@@ -39,3 +39,12 @@ r_cmd_config("CXX")
 # Show C++ config:
 cxx_info()
 }
+\seealso{
+Other maketools: 
+\code{\link{diagnostics}},
+\code{\link{make}()},
+\code{\link{pkgconfig}},
+\code{\link{rtools}},
+\code{\link{sysdeps}}
+}
+\concept{maketools}

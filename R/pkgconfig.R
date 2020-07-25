@@ -4,7 +4,9 @@
 #' that are available on your system.
 #'
 #' @export
+#' @family maketools
 #' @rdname pkgconfig
+#' @name pkgconfig
 #' @examples # Check if pkg-config is available
 #' (info <- pc_info())
 #' if(info$available)

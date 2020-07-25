@@ -4,6 +4,7 @@
 #' of the compiler.
 #'
 #' @export
+#' @family maketools
 #' @name r_config
 #' @rdname r_config
 #' @examples # This runs 'R CMD CONFIG CXX'

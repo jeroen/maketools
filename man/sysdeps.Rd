@@ -37,3 +37,12 @@ the user/deployment machine. This tool does not show dependencies that are
 only needed at build-time, such as static or header-only libraries, and other
 utilities required to build the package.
 }
+\seealso{
+Other maketools: 
+\code{\link{diagnostics}},
+\code{\link{make}()},
+\code{\link{pkgconfig}},
+\code{\link{r_config}},
+\code{\link{rtools}}
+}
+\concept{maketools}

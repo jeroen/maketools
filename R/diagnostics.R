@@ -1,10 +1,13 @@
 #' Diagnostics Report
 #'
-#' Print some diagnostics about your compiler environment.
+#' Print some diagnostics about your compiler environment. These are also
+#' shown when the `maketools` package is attached.
 #'
 #' @export
+#' @family maketools
 #' @rdname diagnostics
-print_diagnostics <- function(){
+#' @name diagnostics
+maketools_diagnostics <- function(){
   if(is_windows()){
     gcc_required <- Sys.getenv('R_COMPILED_BY', "???")
     packageStartupMessage(sprintf("This R for Windows was compiled with %s.", gcc_required))

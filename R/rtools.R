@@ -1,4 +1,4 @@
-#' Find or Setup Rtools
+#' Find or Install Rtools
 #'
 #' Tools to test if a suitable version of Rtools is available, or help
 #' the user to set this up.
@@ -23,6 +23,7 @@
 #' The [rtools_install] function automatically downloads and installs the
 #' appropriate version of Rtools for your current version of R.
 #' @export
+#' @family maketools
 #' @name rtools
 #' @rdname rtools
 #' @importFrom utils download.file head tail askYesNo

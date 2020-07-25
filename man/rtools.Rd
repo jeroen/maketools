@@ -5,7 +5,7 @@
 \alias{rtools_find}
 \alias{rtools_registry_info}
 \alias{rtools_install}
-\title{Find or Setup Rtools}
+\title{Find or Install Rtools}
 \usage{
 rtools_find()
 
@@ -45,3 +45,12 @@ returns \code{NULL} if no suitable version is found on the system.
 The \link{rtools_install} function automatically downloads and installs the
 appropriate version of Rtools for your current version of R.
 }
+\seealso{
+Other maketools: 
+\code{\link{diagnostics}},
+\code{\link{make}()},
+\code{\link{pkgconfig}},
+\code{\link{r_config}},
+\code{\link{sysdeps}}
+}
+\concept{maketools}

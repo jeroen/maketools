@@ -1,6 +1,6 @@
 # Load tibble (if available) for pretty printing
 .onAttach <- function(lib, pkg){
-  print_diagnostics()
+  maketools_diagnostics()
   if(interactive() && is.null(.getNamespace('tibble'))){
     tryCatch({
       getNamespace('tibble')

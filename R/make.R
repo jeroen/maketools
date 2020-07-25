@@ -8,6 +8,7 @@
 #' way to test if the compiler is working.
 #'
 #' @export
+#' @family maketools
 #' @name make
 #' @rdname make
 #' @param target name of output file that you want to make

@@ -18,6 +18,7 @@
 #' utilities required to build the package.
 #'
 #' @export
+#' @family maketools
 #' @rdname sysdeps
 #' @name sysdeps
 #' @param pkg name of an installed R package
