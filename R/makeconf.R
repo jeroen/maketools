@@ -27,7 +27,7 @@ r_cmd_config <- function(VAR = '--all'){
 #' @examples make_call('$(CXX)', '--version')
 make_call <- function(cmd = '$(CC)', args = '--version'){
   testmake <- ifelse(is_solaris(), 'solaris.make', 'test.make')
-  makefile <- safe_path(system.file(testmake, package = 'makeconf'))
+  makefile <- safe_path(system.file(testmake, package = 'maketools'))
   args <- paste(args, collapse = " ")
   vars <- c(
     paste0('R_MAKECONF=', r_makeconf_path()),
@@ -40,7 +40,7 @@ make_call <- function(cmd = '$(CC)', args = '--version'){
 #' @rdname r_cmd_config
 make_echo <- function(cmd = '$(CC)'){
   testmake <- ifelse(is_solaris(), 'solaris.make', 'test.make')
-  makefile <- safe_path(system.file(testmake, package = 'makeconf'))
+  makefile <- safe_path(system.file(testmake, package = 'maketools'))
   vars <- c(
     paste0('R_MAKECONF=', r_makeconf_path()),
     paste0('PROG=', cmd))
