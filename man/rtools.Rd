@@ -37,12 +37,11 @@ required for compiling packages on R-3.6 and older
 
 The function \link{rtools_find} shows information about a suitable version of
 Rtools installed on your system. If needed, it automatically adds \code{make}
-to the PATH of the current session. It returns \code{NULL} if no suitable version
-is installed on the system.
+to the PATH of the current session. If \code{rtools_find()} returns a list
+(containing toolchain information), this means everything is ready to
+install packages from source using \link{install.packages} and others. It
+returns \code{NULL} if no suitable version is found on the system.
 
-The \link{rtools_install} function interactively guides the user through setting
-up and/or configuring Rtools. If rtools is not already installed, it will
-prompt the user to do so. If needed, it sets the PATH and other variables
-to the correct values. After running \code{rtools_install()} everything is set
-to install packages from source using \link{install.packages} and others.
+The \link{rtools_install} function automatically downloads and installs the
+appropriate version of Rtools for your current version of R.
 }
