@@ -5,7 +5,7 @@
 \alias{rtools_info}
 \alias{rtools_setup}
 \alias{rtools_install}
-\title{Setup Rtools}
+\title{Find or Setup Rtools}
 \usage{
 rtools_info()
 
@@ -14,13 +14,33 @@ rtools_setup()
 rtools_install(silent = TRUE)
 }
 \arguments{
-\item{silent}{perform automatic unattended installation (answer YES
-to all questions)}
+\item{silent}{performs automatic unattended installation with all
+the default options. If set to \code{FALSE} the user has to click through
+the usual installation wizard.}
 }
 \description{
-Windows does not ship with a native compiler toolchain. In order to build
-R packages with compiled code, we need the R for Windows toolchain bundle
-called \href{https://cran.r-project.org/bin/windows/Rtools/}{Rtools}. Below are
-utilities to check if and where Rtools is installed, and to set the proper
-\code{PATH} and \code{BINPREF} variables to make it work.
+Tools to test if a suitable version of Rtools is available, or help
+the user to set this up.
+}
+\details{
+Unlike most operating systems, Windows does not include a native compiler.
+Hence in order to build R packages with compiled C/C++/Fortran code on
+Windows, you need to install our custom toolchain bundle called Rtools.
+
+There are currently 2 versions of Rtools available:
+\itemize{
+\item \href{https://cran.r-project.org/bin/windows/Rtools/}{rtools40}: required
+for compiling packages on R-4.0 and newer
+\item \href{https://cran.r-project.org/bin/windows/Rtools/history.html}{rtools35}:
+required for compiling packages on R-3.6 and older
+}
+
+The function \link{rtools_info} lists the Rtools versions that are installed
+on your system (without touching any configurations).
+
+The \link{rtools_setup} function interactively guides the user through setting
+up and/or configuring Rtools. If rtools is not already installed, it will
+prompt the user to do so. If needed, it sets the PATH and other variables
+to the correct values. After running \code{rtools_setup()} everything is set
+to install packages from source using \link{install.packages} and others.
 }

@@ -1,10 +1,26 @@
-#' Setup Rtools
+#' Find or Setup Rtools
 #'
-#' Windows does not ship with a native compiler toolchain. In order to build
-#' R packages with compiled code, we need the R for Windows toolchain bundle
-#' called [Rtools](https://cran.r-project.org/bin/windows/Rtools/). Below are
-#' utilities to check if and where Rtools is installed, and to set the proper
-#' `PATH` and `BINPREF` variables to make it work.
+#' Tools to test if a suitable version of Rtools is available, or help
+#' the user to set this up.
+#'
+#' Unlike most operating systems, Windows does not include a native compiler.
+#' Hence in order to build R packages with compiled C/C++/Fortran code on
+#' Windows, you need to install our custom toolchain bundle called Rtools.
+#'
+#' There are currently 2 versions of Rtools available:
+#'  - [rtools40](https://cran.r-project.org/bin/windows/Rtools/): required
+#'  for compiling packages on R-4.0 and newer
+#'  - [rtools35](https://cran.r-project.org/bin/windows/Rtools/history.html):
+#'  required for compiling packages on R-3.6 and older
+#'
+#' The function [rtools_info] lists the Rtools versions that are installed
+#' on your system (without touching any configurations).
+#'
+#' The [rtools_setup] function interactively guides the user through setting
+#' up and/or configuring Rtools. If rtools is not already installed, it will
+#' prompt the user to do so. If needed, it sets the PATH and other variables
+#' to the correct values. After running `rtools_setup()` everything is set
+#' to install packages from source using [install.packages] and others.
 #'
 #' @export
 #' @name rtools
@@ -85,8 +101,9 @@ rtools_setup <- function(){
 
 #' @export
 #' @rdname rtools
-#' @param silent perform automatic unattended installation (answer YES
-#' to all questions)
+#' @param silent performs automatic unattended installation with all
+#' the default options. If set to `FALSE` the user has to click through
+#' the usual installation wizard.
 rtools_install <- function(silent = TRUE){
   assert_windows()
   need_gcc <- Sys.getenv('R_COMPILED_BY')
