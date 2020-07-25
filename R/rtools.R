@@ -85,7 +85,6 @@ rtools_setup <- function(){
       message(sprintf("Adding %s to the PATH", info$PATH))
       Sys.setenv(PATH = paste0(info$PATH, ';', Sys.getenv('PATH')))
     } else {
-      message("No suitable Rtools found. Run rtools_install() to get one.")
       return(NULL)
     }
   }

@@ -10,6 +10,9 @@
 
 .onLoad <- function(lib, pkg){
   if(is_windows()){
-    rtools_setup()
+    if(!length(rtools_setup())){
+      packageStartupMessage("No suitable Rtools installation found.
+Run maketools::rtools_install() or visit: https://cran.r-project.org/bin/windows/Rtools/")
+    }
   }
 }
