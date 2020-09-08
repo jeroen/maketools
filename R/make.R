@@ -104,7 +104,7 @@ r_makeconf_path <- function(){
 }
 
 r_make_path <- function(){
-  Sys.getenv('MAKE', 'make')
+  ifelse(running_on('solaris') && has('gmake'), 'gmake', Sys.getenv('MAKE', 'make'))
 }
 
 safe_path <- function(x){
