@@ -69,9 +69,10 @@ package_links_to <- function(pkg, lib.loc = NULL){
 }
 
 links_to_ldd <- function(dll){
+  readelf <- ifelse(running_on('solaris'), 'greadelf', 'readelf')
   lddinfo <- sys_call('ldd', dll, error = FALSE)
   lddinfo <- sub(" \\([a-f0-9x]+\\)$", "", lddinfo)
-  text <- sys_call('readelf', c('-d', dll))
+  text <- sys_call(readelf, c('-d', dll))
   text <- grep('^.*NEEDED.*\\[(.*)\\]$', text, value = TRUE)
   shlibs <- sub('^.*NEEDED.*\\[(.*)\\]$', '\\1', text)
   paths <- lapply(shlibs, function(x){
