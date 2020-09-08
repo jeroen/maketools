@@ -65,6 +65,8 @@ r_cmd_config <- function(VAR = '--all'){
 
 make_get_info <-function(VAR, FLAGS = NULL, STD = NULL, args = '--version'){
   PATH <- r_cmd_config(VAR)
+  if(running_on('solaris') && grepl('developerstudio', PATH))
+    args <- '-V'
   if(length(FLAGS))
     FLAGS <- r_cmd_config(FLAGS)
   if(length(STD))
