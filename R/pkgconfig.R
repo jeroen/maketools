@@ -79,7 +79,7 @@ pc_pkg_info <- function(pkg = 'libcurl'){
 }
 
 pkgconfig_name <- function(){
-  pc <- Sys.getenv('PKG_CONFIG_PATH', "")
+  pc <- Sys.getenv('PKG_CONFIG', "")
   if(is_string(pc))
     return(pc)
   ifelse(is_windows(), make_echo('$(BINPREF)pkg-config'), 'pkg-config')
