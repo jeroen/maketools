@@ -36,9 +36,9 @@ When you provide users with pre-compiled binaries on Linux, you really need to p
 
 ## Automatically determine runtime system-dependencies
 
-In a nutshell: After you have successfully built an R package on your build server, you call `ldd` on the package `.so` file to list the shared libraries it links to. The operating system package manager (e.g. `yum` or `dpkg`) can tell you which system package each file belongs to. Simply add this information to the binary package DESCRIPTION file that you are shipping. That's it!
+In a nutshell: After you have successfully built an R package on your Linux server, run `ldd` on the package `.so` file to list the shared libraries it links to. The operating system package manager (e.g. `yum` or `dpkg`) can tell you which system package each file belongs to. Simply add this information to the binary package DESCRIPTION file that you are shipping. That's it!
 
-The `maketools` package has an example function that shows the system dependencies for installed R packages on Linux. For example, let's have a look at the dependencies of the `sf` package. On Ubuntu 20.04 we see:
+To make it even easier: the `maketools` package has an example function that shows the system dependencies for installed R packages on Linux. For example, let's have a look at the dependencies of the `sf` CRAN package. On Ubuntu 20.04 we see:
 
 ```r
 > maketools::package_sysdeps("sf")
@@ -60,11 +60,11 @@ And on Fedora 32 we get:
 4 libstdc++.so.6.0.28 libstdc++       <NA>    gcc  10.2.1
 ```
 
-The first column `shlib` tells you which shared libraries the R package is linked to, i.e. the filenames of the `.so` files. The second column `package` tells you which system package this file belongs to. This is the relevant piece of information when you are distributing the binary, because these are exactly the things the user needs to have installed for the binary package to work. Nothing more, nothing less!
+The first column `shlib` tells you which shared libraries the R package is linked to, i.e. the filenames of the `.so` files. The second column shows which system package this file belongs to. This is the (only) relevant piece of information when you are distributing the binary, because these are exactly the system packages the client needs to have installed for the binary R package to work. Nothing more, nothing less!
 
 ## A suggested workflow
 
-The simplest way to build R binary packages is on a server or container that has all build-time libraries pre-installed (the per-package build-time dependencies are really not relevant). For example you can use the cranlike [`cran/debian`](https://hub.docker.com/repository/docker/cran/debian) or [`cran/ubuntu`](https://hub.docker.com/repository/docker/cran/ubuntu) docker images.
+A simple way to build R binary packages is on a server or container that has all build-time libraries pre-installed (the per-package build-time dependencies are really not relevant). For example you can use the cranlike [`cran/debian`](https://hub.docker.com/repository/docker/cran/debian) or [`cran/ubuntu`](https://hub.docker.com/repository/docker/cran/ubuntu) docker images for the latest version of Debian and Ubuntu.
 
 ```r
 docker run -it cran/ubuntu
