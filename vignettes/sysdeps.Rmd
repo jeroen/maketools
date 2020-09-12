@@ -11,15 +11,15 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-If you are distributing binary R packages (or any other binary) for Linux, it is important that you check and publish the __run-time dependencies__ for your binaries. This can easily be automated, and prevents many problems and conflicts. Currently RSPM leaves users guessing which system libraries the binaries are linked to, which results in users installing unnecessary build-time dependencies, sometimes even the wrong ones.
+If you are distributing binary R packages (or any other binary) for Linux, it is important that you check and publish the __run-time dependencies__ for your binaries. This can easily be automated, and prevents many problems and conflicts. Currently RSPM leaves the client  guessing which system libraries the binaries are linked to, which results in users installing unnecessary build-time dependencies, sometimes even the wrong ones.
 
 Once you distinguish between build-time and run-time system libraries in Linux distributions, the solution is obvious, and the system will become much simpler and more robust.
 
-This is not a hack, Linux package managers have been designed to automatically determine the run-time dependencies between different system libraries. You should use the same methods when distributing binaries for R packages.
+This is not a hack, Linux package managers have been designed to automatically determine the run-time dependencies between different system libraries. You should use the same methods when providing binaries for R packages, even if they are not distributed in a `rpm` or `deb` file.
 
 ## Dynamic linking to system libraries on Linux
 
-Many R packages on Linux require external system libraries. When you build the package from source, you need the build-time system library, which includes header files and has many more dependencies needed at build-time. These build-time system libraries are always named with a `-dev` or `-devel` postfix, for example [libcurl4-openssl-dev](https://packages.debian.org/bullseye/libcurl4-openssl-dev) on Debian/Ubuntu, and `curl-devel` on Fedora/RHEL.
+Many R packages on Linux require external system libraries. When you build the package from source, you need the build-time system library, which includes header files and has many additional dependencies needed at build-time. These build-time system libraries are always named with a `-dev` or `-devel` postfix, for example [`libcurl4-openssl-dev`](https://packages.debian.org/bullseye/libcurl4-openssl-dev) on Debian/Ubuntu, and `curl-devel` on Fedora/RHEL.
 
 But, here is the crucial part: __once the R package has been compiled, you only need the run-time system library to use it!__ This is __a different package__ which is much lighter, because the build-time package always depends on the run-time package, but not the other way around.
 
@@ -30,13 +30,13 @@ Run-time system libraries are:
  - Versioned: they have a different package name for different ABI versions of the library
  - Can automatically be determined using `ldd` on the R package `.so` file
  
-For example the run-time library for libcurl is [libcurl4](https://packages.debian.org/bullseye/libcurl4).
+For example, if you build against [`libcurl4-openssl-dev`](https://packages.debian.org/bullseye/libcurl4-openssl-dev) then the run-time library is [`libcurl4`](https://packages.debian.org/bullseye/libcurl4).
 
-When you provide users with pre-compiled binaries on Linux, you really need to provide the metadata about the run-time dependencies of those binaries. You can easily automate this, and it would make RSPM system dependencies management much simpler and more reliable for users.
+When you provide users with pre-compiled binaries on Linux, you really need to provide the metadata about the run-time dependencies of those binaries. You can easily automate this, and it would make RSPM dependency management much simpler and more reliable.
 
 ## Automatically determine runtime system-dependencies
 
-In a nutshell: After you have successfully built an R package on your build server, you call `ldd` on the package `.so` file to list the shared libraries it links to. The operating system package manager (e.g. `yum` or `dpkg`) can tell you which system package each file belongs to. Simply add this information to the binary package DESCRIPTION file that you are shipping to the user. That's it!
+In a nutshell: After you have successfully built an R package on your build server, you call `ldd` on the package `.so` file to list the shared libraries it links to. The operating system package manager (e.g. `yum` or `dpkg`) can tell you which system package each file belongs to. Simply add this information to the binary package DESCRIPTION file that you are shipping. That's it!
 
 The `maketools` package has an example function that shows the system dependencies for installed R packages on Linux. For example, let's have a look at the dependencies of the `sf` package. On Ubuntu 20.04 we see:
 
@@ -73,17 +73,17 @@ docker run -it cran/ubuntu
 After building and installing an R package, you check the package run-time dependencies, for example:
 
 ```r
-install.packages("openssl")
+> install.packages("openssl")
 ## ...
 ## ...
 ## ** checking absolute paths in shared objects and dynamic libraries
 ## ** testing if installed package can be loaded from final location
 ## ** testing if installed package keeps a record of temporary installation path
 ## * DONE (openssl)
-maketools::package_sysdeps("openssl")
-##              shlib   package    headers  source         version
-## 1    libssl.so.1.1 libssl1.1 libssl-dev openssl 1.1.1f-1ubuntu2
-## 2 libcrypto.so.1.1 libssl1.1 libssl-dev openssl 1.1.1f-1ubuntu2
+> maketools::package_sysdeps("openssl")
+              shlib   package    headers  source         version
+1    libssl.so.1.1 libssl1.1 libssl-dev openssl 1.1.1f-1ubuntu2
+2 libcrypto.so.1.1 libssl1.1 libssl-dev openssl 1.1.1f-1ubuntu2
 ```
 
-For every R binary package you distribute, you should provide, at a minimum, the information from the `package` column. The best way would be to add this to the DESCRIPTION file of the compiled binary R package, and preferably also expose this in the [PACKAGES](https://packagemanager.rstudio.com/cran/__linux__/xenial/latest/src/contrib/PACKAGES) repository index. Thereby clients can lookup the required system dependencies needed for this binary R package, 100% reliably, without guessing or conflicts.
+For every R binary package you distribute, you should provide, at a minimum, the information from the `package` column. The best way would be to add this to the DESCRIPTION file of the binary R package, and ideally also expose this in the [PACKAGES](https://packagemanager.rstudio.com/cran/__linux__/xenial/latest/src/contrib/PACKAGES) repository index. Thereby clients can lookup the required system dependencies needed for this binary R package, 100% reliably, without guessing or conflicts.
