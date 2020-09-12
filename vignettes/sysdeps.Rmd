@@ -15,7 +15,7 @@ If you are distributing binary R packages (or any other binary) for Linux, it is
 
 Once you distinguish between build-time and run-time system libraries in Linux distributions, the solution is obvious, and the system will become much simpler and more robust.
 
-This is not a hack, Linux package managers have been designed to automatically determine the run-time dependencies between different system libraries. You should use the same methods when providing binaries for R packages, even if they are not distributed in a `rpm` or `deb` file.
+This is not a hack, Linux package managers have been designed to automatically determine dependencies between system libraries. You should use the same tools when providing binaries for R packages, even if they are not distributed in a `rpm` or `deb` package.
 
 ## Dynamic linking to system libraries on Linux
 
@@ -30,7 +30,7 @@ Run-time system libraries are:
  - Versioned: they have a different package name for different ABI versions of the library
  - Can automatically be determined using `ldd` on the R package `.so` file
  
-For example, if you build against [`libcurl4-openssl-dev`](https://packages.debian.org/bullseye/libcurl4-openssl-dev) then the run-time library is [`libcurl4`](https://packages.debian.org/bullseye/libcurl4).
+For example, if you build an R package against [`libcurl4-openssl-dev`](https://packages.debian.org/bullseye/libcurl4-openssl-dev), then the run-time dependency is [`libcurl4`](https://packages.debian.org/bullseye/libcurl4).
 
 When you provide users with pre-compiled binaries on Linux, you really need to provide the metadata about the run-time dependencies of those binaries. You can easily automate this, and it would make RSPM dependency management much simpler and more reliable.
 
