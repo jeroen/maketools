@@ -11,11 +11,11 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-If you are distributing binary R packages (or any other binary) for Linux, it is important that you check and publish the __run-time dependencies__ for your binaries. This can easily be automated, and prevents many problems and conflicts. Currently RSPM leaves the client  guessing which system libraries the binaries are linked to, which results in users installing unnecessary build-time dependencies, sometimes even the wrong ones.
+If you are distributing binary R packages (or any other binary) for Linux, it is important that you check and declare the __run-time dependencies__ for your binaries. This can easily be automated, and prevents many problems and conflicts. Currently RSPM leaves the client guessing which system libraries the binaries are linked to, which results in users installing unnecessary build-time dependencies, sometimes even the wrong ones.
 
 Once you distinguish between build-time and run-time system libraries in Linux distributions, the solution is obvious, and the system will become much simpler and more robust.
 
-This is not a hack, Linux package managers have been designed to automatically determine dependencies between system libraries. You should use the same tools when providing binaries for R packages, even if they are not distributed in a `rpm` or `deb` package.
+This is not a hack, Linux package managers have been designed to [automatically determine dependencies](http://ftp.rpm.org/max-rpm/s1-rpm-depend-auto-depend.html) between system libraries. You should use the same tools when providing binaries for R packages, even if they are not distributed in a `rpm` or `deb` format.
 
 ## Dynamic linking to system libraries on Linux
 
