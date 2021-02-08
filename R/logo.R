@@ -19,6 +19,7 @@ vignettes_base64 <- function(pkg){
   vignettes <- as.data.frame(tools::getVignetteInfo(pkg))
   if(nrow(vignettes) > 0){
     df <- vignettes[c('File', 'PDF', 'Title')]
+    names(df) <- c("source", "filename", "title")
     gsub("\n", "", jsonlite::base64_enc(jsonlite::toJSON(df)), fixed = TRUE)
   }
 }
