@@ -2,13 +2,18 @@
 % Please edit documentation in R/logo.R
 \name{find_logo}
 \alias{find_logo}
-\title{Find logo}
+\alias{vignettes_base64}
+\title{Package tools}
 \usage{
 find_logo(path = ".")
+
+vignettes_base64(pkg)
 }
 \arguments{
 \item{path}{root directory of package}
+
+\item{pkg}{name of the installed package}
 }
 \description{
-Match logic from pkgdown but return path relative package root.
+Get some extra info about packages.
 }
