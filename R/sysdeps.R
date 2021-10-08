@@ -81,6 +81,9 @@ links_to_ldd <- function(dll){
   shlibs <- sub('^.*NEEDED.*\\[(.*)\\]$', '\\1', text)
   paths <- lapply(shlibs, function(x){
     line <- grep(x, lddinfo, fixed = TRUE, value = TRUE)
+    if(grepl('not found', line, fixed = TRUE)){
+      return(x)
+    }
     utils::tail(strsplit(line, ' ', fixed = TRUE)[[1]], 1)
   })
   trimws(unlist(paths))
