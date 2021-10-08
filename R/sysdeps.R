@@ -51,6 +51,7 @@ package_sysdeps <- function(pkg, lib.loc = NULL){
 #' @rdname sysdeps
 package_sysdeps_string <- function(pkg, lib.loc = NULL){
   df <- package_sysdeps(pkg = pkg, lib.loc = lib.loc)
+  df <- subset(df, !is.na(package))
   paste0(sprintf("%s (%s)", df$package, df$version), collapse = ", ")
 }
 
