@@ -73,13 +73,13 @@ package_links_to <- function(pkg, lib.loc = NULL){
   if(!file.exists(dll)) # No compiled code
     return(character())
 
-  # Todo: come up with a more portable better method
-  if(running_on('ubuntu') && dll_has_symbol(dll, 'rust_begin_unwind')){
-    rustc <- Sys.which('rustc')
-    if(nchar(rustc)){
-      return(rustc)
-    }
-  }
+  # Todo: doesn't seem to work
+  #if(running_on('ubuntu') && dll_has_symbol(dll, 'rust_begin_unwind')){
+  #  rustc <- Sys.which('rustc')
+  #  if(nchar(rustc)){
+  #    return(rustc)
+  #  }
+  #}
   structure(if(running_on('macos')){
     links_to_macos(dll)
   } else if(running_on('windows')) {
