@@ -72,8 +72,13 @@ package_links_to <- function(pkg, lib.loc = NULL){
   dll <- file.path(pkgpath, sprintf('libs%s/%s%s', Sys.getenv('R_ARCH'), pkg, .Platform$dynlib.ext))
   if(!file.exists(dll)) # No compiled code
     return(character())
-  if(dll_has_symbol(dll, 'rust_begin_unwind')){
-    return(Sys.which('rustc'))
+
+  # On Windows, rustc is not part of the toolchain
+  if(!running_on('windows') && dll_has_symbol(dll, 'rust_begin_unwind')){
+    rustc <- Sys.which('rustc')
+    if(nchar(rustc)){
+      return(rustc)
+    }
   }
   structure(if(running_on('macos')){
     links_to_macos(dll)
