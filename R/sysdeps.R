@@ -50,7 +50,7 @@ package_sysdeps <- function(pkg, lib.loc = NULL){
 #' @export
 #' @rdname sysdeps
 dll_has_symbol <- function(dll, symbol){
-  cmd <- sprintf('nm -gDp %s | grep %s', dll, symbol)
+  cmd <- sprintf('nm -gp %s | grep %s', dll, symbol)
   out <- system(cmd, intern = TRUE)
   isTRUE(length(out) && grepl(symbol, out))
 }
@@ -72,8 +72,8 @@ package_links_to <- function(pkg, lib.loc = NULL){
   dll <- file.path(pkgpath, sprintf('libs%s/%s%s', Sys.getenv('R_ARCH'), pkg, .Platform$dynlib.ext))
   if(!file.exists(dll)) # No compiled code
     return(character())
-  if(running_on('ubuntu') && dll_has_symbol(dll, 'rust_begin_unwind')){
-    return('rustc')
+  if(dll_has_symbol(dll, 'rust_begin_unwind')){
+    return(Sys.which('rustc'))
   }
   structure(if(running_on('macos')){
     links_to_macos(dll)
