@@ -50,9 +50,8 @@ package_sysdeps <- function(pkg, lib.loc = NULL){
 #' @export
 #' @rdname sysdeps
 dll_has_symbol <- function(dll, symbol){
-  cmd <- sprintf('nm -gDp %s | grep %s', dll, symbol)
-  out <- system(cmd, intern = TRUE)
-  isTRUE(length(out) && grepl(symbol, out))
+  db <- tools:::read_symbols_from_object_file(dll)
+  symbol %in% db[,'name']
 }
 
 #' @export
@@ -73,13 +72,13 @@ package_links_to <- function(pkg, lib.loc = NULL){
   if(!file.exists(dll)) # No compiled code
     return(character())
 
-  # Todo: doesn't seem to work
-  #if(running_on('ubuntu') && dll_has_symbol(dll, 'rust_begin_unwind')){
-  #  rustc <- Sys.which('rustc')
-  #  if(nchar(rustc)){
-  #    return(rustc)
-  #  }
-  #}
+  # Todo: is there a better way to detect rust?
+  if(running_on('ubuntu') && dll_has_symbol(dll, '_rust_begin_unwind')){
+    rustc <- Sys.which('rustc')
+    if(nchar(rustc)){
+      return(rustc)
+    }
+  }
   structure(if(running_on('macos')){
     links_to_macos(dll)
   } else if(running_on('windows')) {
