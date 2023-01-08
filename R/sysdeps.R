@@ -47,12 +47,10 @@ package_sysdeps <- function(pkg, lib.loc = NULL){
   df_as_tibble(df)
 }
 
-#' @export
-#' @rdname sysdeps
-dll_has_symbol <- function(dll, symbol){
-  db <- tools:::read_symbols_from_object_file(dll)
-  symbol %in% db[,'name']
-}
+#dll_has_symbol <- function(dll, symbol){
+#  db <- tools:::read_symbols_from_object_file(dll)
+#  symbol %in% db[,'name']
+#}
 
 #' @export
 #' @rdname sysdeps
