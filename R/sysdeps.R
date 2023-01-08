@@ -74,12 +74,12 @@ package_links_to <- function(pkg, lib.loc = NULL){
 
   # Todo: is there a better way to detect rust?
   # Does not work icw _R_SHLIB_STRIP_=true
-  if(running_on('ubuntu') && dll_has_symbol(dll, '_rust_begin_unwind')){
-    rustc <- Sys.which('rustc')
-    if(nchar(rustc)){
-      return(rustc)
-    }
-  }
+  #if(running_on('ubuntu') && dll_has_symbol(dll, '_rust_begin_unwind')){
+  #  rustc <- Sys.which('rustc')
+  #  if(nchar(rustc)){
+  #    return(rustc)
+  #  }
+  #}
   structure(if(running_on('macos')){
     links_to_macos(dll)
   } else if(running_on('windows')) {
