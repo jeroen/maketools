@@ -75,7 +75,7 @@ rtools_registry_info <- function(){
     bindir <- paste0(install, ifelse(version >= 4, '\\usr\\bin', '\\bin'))
     binpref <- paste0(install, ifelse(version >= 4, '\\mingw$(WIN)\\bin\\', '\\mingw_$(WIN)\\bin\\'))
     binpref <- normalizePath(binpref, winslash = '/', mustWork = FALSE)
-    cc <- paste0(install, ifelse(version >= 4, '\\mingw32\\bin\\gcc', '\\mingw_32\\bin\\gcc'))
+    cc <- paste0(install, ifelse(version >= 4, '\\mingw64\\bin\\gcc', '\\mingw_64\\bin\\gcc'))
     gcc_version <- rtools_cc_version(cc)
     if(is_string(gcc_version)){
       available <- TRUE
