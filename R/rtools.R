@@ -53,12 +53,9 @@ rtools_find <- function(){
 
 rtools_get_compatible <- function(){
   info <- rtools_registry_info()
-  for(x in info){
-    if(isTRUE(x$compatible)) {
-      return(x)
-    }
+  if(isTRUE(info$compatible)) {
+    return(info)
   }
-  return(NULL)
 }
 
 
@@ -66,39 +63,34 @@ rtools_get_compatible <- function(){
 #' @rdname rtools
 rtools_registry_info <- function(){
   assert_windows()
-  installs <- lapply(c("64-bit", "32-bit"), function(view){
-    x <- read_registery("SOFTWARE\\R-core\\Rtools", view = view)
-    if(!length(x))
-      return(NULL)
-    version <- as.numeric_version(x[['Current Version']])
-    install <- x[['InstallPath']]
-    bindir <- paste0(install, ifelse(version >= 4, '\\usr\\bin', '\\bin'))
-    binpref <- paste0(install, ifelse(version >= 4, '\\mingw$(WIN)\\bin\\', '\\mingw_$(WIN)\\bin\\'))
-    binpref <- normalizePath(binpref, winslash = '/', mustWork = FALSE)
-    cc <- paste0(install, ifelse(version >= 4, '\\mingw64\\bin\\gcc', '\\mingw_64\\bin\\gcc'))
-    gcc_version <- rtools_cc_version(cc)
-    if(is_string(gcc_version)){
-      available <- TRUE
-      api <- gcc_api(gcc_version)
-      compatible <- gcc_api(Sys.getenv('R_COMPILED_BY')) == api
-    } else {
-      available <- FALSE
-      api <- NA
-      compatible <- NA
-    }
-    list(
-      version = version,
-      compiler = gcc_version,
-      api = api,
-      PATH = bindir,
-      BINPREF = binpref,
-      available = available,
-      compatible = compatible
-    )
-  })
-  # In theory, rtools40 can be 32-bit Windows host but this is very rare
-  # and probably the above doesn't work in that case anyway.
-  structure(installs, names = c("rtools4", "rtools3"))
+  x <- read_registery("SOFTWARE\\R-core\\Rtools", view = "64-bit")
+  if(!length(x))
+    return(NULL)
+  version <- as.numeric_version(x[['Current Version']])
+  install <- x[['InstallPath']]
+  bindir <- paste0(install, '\\usr\\bin')
+  binpref <- paste0(install, ifelse(version >= 4.2, '\\x86_64-w64-mingw32.static.posix\\bin', '\\mingw$(WIN)\\bin\\'))
+  binpref <- normalizePath(binpref, winslash = '/', mustWork = FALSE)
+  cc <- paste0(install, ifelse(version >= 4.2, '\\x86_64-w64-mingw32.static.posix\\bin\\gcc', '\\mingw64\\bin\\gcc'))
+  gcc_version <- rtools_cc_version(cc)
+  if(is_string(gcc_version)){
+    available <- TRUE
+    api <- gcc_api(gcc_version)
+    compatible <- gcc_api(Sys.getenv('R_COMPILED_BY')) == api
+  } else {
+    available <- FALSE
+    api <- NA
+    compatible <- NA
+  }
+  list(
+    version = version,
+    compiler = gcc_version,
+    api = api,
+    PATH = bindir,
+    BINPREF = binpref,
+    available = available,
+    compatible = compatible
+  )
 }
 
 #' @export
