@@ -1,7 +1,7 @@
 Package: maketools
 Type: Package
 Title: Exploring and Testing the Toolchain and System Libraries
-Version: 1.2.4
+Version: 1.2.5
 Authors@R: person("Jeroen", "Ooms", role = c("aut", "cre", "cph"), 
     email = "jeroen@berkeley.edu", comment = c(ORCID = "0000-0002-4035-0289"))
 Description: A collection of helper functions that interface with the appropriate
