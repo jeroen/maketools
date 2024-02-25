@@ -193,7 +193,7 @@ rpm_find <- function(path){
 pacman_find <- function(path){
   tryCatch({
     str <- sys_call('pacman', c('-Qo', path))
-    paste(tail(strsplit(str, ' ', fixed = TRUE)[[1]], 2), collapse = '\t')
+    paste(utils::tail(strsplit(str, ' ', fixed = TRUE)[[1]], 2), collapse = '\t')
   }, error = function(e){
     NA_character_
   })
