@@ -7,9 +7,3 @@
     }, error = function(e){})
   }
 }
-
-.onLoad <- function(lib, pkg){
-  if(is_windows()){
-    rtools_find()
-  }
-}

@@ -45,7 +45,6 @@ Other maketools:
 \code{\link{diagnostics}},
 \code{\link{make}()},
 \code{\link{r_config}},
-\code{\link{rtools}},
 \code{\link{sysdeps}}
 }
 \concept{maketools}

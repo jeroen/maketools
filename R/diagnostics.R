@@ -15,10 +15,6 @@ maketools_diagnostics <- function(){
   minfo <- make_info()
   if(minfo$available == FALSE){
     packageStartupMessage('No "make" on the PATH. R will not be able to compile code.')
-    if(is_windows()){
-      url <- 'https://cran.r-project.org/bin/windows/Rtools/'
-      packageStartupMessage("Please run maketools::rtools_install() or visit: ", url)
-    }
     return()
   }
   mversion <- ifelse(is_string(minfo$version), minfo$version, "make")

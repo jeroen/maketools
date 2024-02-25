@@ -42,7 +42,6 @@ Other maketools:
 \code{\link{diagnostics}},
 \code{\link{make}()},
 \code{\link{pkgconfig}},
-\code{\link{r_config}},
-\code{\link{rtools}}
+\code{\link{r_config}}
 }
 \concept{maketools}

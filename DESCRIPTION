@@ -19,7 +19,7 @@ Encoding: UTF-8
 Imports:
     sys (>= 3.1)
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.3.1
 VignetteBuilder: knitr
 Suggests:
     curl,

@@ -16,7 +16,6 @@ Other maketools:
 \code{\link{make}()},
 \code{\link{pkgconfig}},
 \code{\link{r_config}},
-\code{\link{rtools}},
 \code{\link{sysdeps}}
 }
 \concept{maketools}
