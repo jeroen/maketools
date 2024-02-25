@@ -280,7 +280,8 @@ get_brew_url <- function(pkg_names){
       stopifnot(length(text) > 0)
       sub(pattern, '\\1', text)
     }, error = function(e){
-      sprintf('https://github.com/homebrew/homebrew-core/blob/master/Formula/%s.rb', pkg)
+      prefix <- substring(pkg, 1, ifelse(grepl("^lib", pkg), 3, 1))
+      sprintf('https://github.com/homebrew/homebrew-core/blob/master/Formula/%s/%s.rb', prefix, pkg)
     })
   }, character(1), USE.NAMES = FALSE)
 }
