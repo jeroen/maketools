@@ -16,10 +16,10 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS-13,   r: 'release'}
-          - {os: macOS-14,   r: 'release'}
-          - {os: windows-latest, r: 'release'}
+          - {os: macos-13,   r: 'release'}
+          - {os: macos-14,   r: 'release'}
           - {os: windows-latest, r: 'devel'}
+          - {os: windows-latest, r: 'release'}
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: 'oldrel-1'}
@@ -27,7 +27,6 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
-      _R_CALLS_INVALID_NUMERIC_VERSION_: yes
 
     steps:
       - uses: actions/checkout@v4
@@ -39,7 +38,6 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
-          rtools-version: '43'
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
