@@ -34,6 +34,10 @@ package_sysdeps <- function(pkg, lib.loc = NULL){
   skiplist <- c("libR", "libRblas", "libRlapack", "libm", "libgcc_s", "libc", "ld-linux-x86-64", "libSystem.B")
   paths <- paths[is.na(match(dll_name_only(paths), skiplist))]
   paths <- normalizePath(paths, mustWork = FALSE) # expand symlinks
+  paths_to_sysdep(paths)
+}
+
+paths_to_sysdep <- function(paths){
   pkgs <- find_packages(paths)
   df <- data.frame(
     shlib = basename(paths),
